@@ -1,6 +1,56 @@
-# 🚀 Inicio Rápido - Confianza Móvil Localhost
+# 🚀 Inicio Rápido - CrediPass
 
-## Pasos Rápidos para Ver el Proyecto Funcionando
+## ⚡ Opción Rápida: Monad Testnet (Recomendado)
+
+Los contratos ya están desplegados en **Monad Testnet (Chain ID 10143)**.  
+Direcciones de contratos: Ver `MONAD_CONFIG.md`
+
+### 1️⃣ Instalar Dependencias
+
+```bash
+cd frontend
+npm install
+```
+
+### 2️⃣ Configurar MetaMask
+
+1. Abre MetaMask
+2. Agregá red personalizada:
+   - **Nombre**: Monad Testnet
+   - **RPC**: https://testnet-rpc.monad.xyz
+   - **Chain ID**: 10143
+   - **Símbolo**: MON
+   - **Explorador**: https://testnet.monadscan.com
+3. Selectá Monad Testnet en MetaMask
+
+### 3️⃣ Obtener Tokens MON (Faucet)
+
+- Ve a: https://faucet.monad.xyz
+- Pega tu dirección de wallet
+- Solicita tokens (~1 MON para gas)
+
+### 4️⃣ Iniciar Frontend
+
+```bash
+npm run dev
+```
+
+Abre: http://localhost:3000
+
+### 5️⃣ Usar la App
+
+1. Haz clic en "Conectar MetaMask"
+2. Verás el modo demo (datos de ejemplo)
+3. Crea un pasaporte (NFT) para activar modo real
+4. Registra pagos y obtén recompensas
+
+---
+
+## 🖥️ Opción Local: Hardhat Localhost
+
+Para desarrollo local sin dependencia de testnet.
+
+### Pasos Rápidos para Ver el Proyecto Funcionando
 
 ### 1️⃣ Instalar Dependencias
 
