@@ -1,0 +1,41 @@
+{
+  "name": "Trustlayerc-contracts",
+  "version": "1.0.0",
+  "description": "Smart contracts for Trustlayerc - Tu pasaporte financiero digital",
+  "main": "index.js",
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "node": "hardhat node",
+    "deploy:local": "hardhat run scripts/deploy-local.js --network localhost",
+    "deploy:testnet": "hardhat run scripts/deploy-testnet.js --network monad-testnet",
+    "deploy:monad-testnet": "hardhat run scripts/deploy-testnet.js --network monad-testnet",
+    "deploy:monad": "hardhat run scripts/deploy-mainnet.js --network monad",
+    "verify:monad-testnet": "hardhat verify --network monad-testnet",
+    "verify:monad": "hardhat verify --network monad",
+    "check-balance": "hardhat run scripts/check-balance.js"
+  },
+  "keywords": [
+    "blockchain",
+    "solidity",
+    "hardhat",
+    "nft",
+    "credit",
+    "reputation"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.20.1",
+    "dotenv": "^16.4.5"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.2"
+  }
+}
+
+
+
+
+
