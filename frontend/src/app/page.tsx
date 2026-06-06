@@ -1,10 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useAccount, useConnect, useDisconnect, useSwitchChain } from "wagmi";
-import { metaMask } from "wagmi/connectors";
-import { createConfig, WagmiProvider, http } from "wagmi";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useAccount, useConnect, useConnectors, useDisconnect, useSwitchChain } from "wagmi";
 import { Leaderboard } from "@/components/Leaderboard";
 import { AIPrediction } from "@/components/AIPrediction";
 import { NotificationsPanel } from "@/components/NotificationsPanel";
@@ -40,61 +37,10 @@ import ScorePaymentModal from "@/components/ScorePaymentModal";
 import TrustScoreCard from "@/components/TrustScoreCard";
 import { Wallet, LogOut, CreditCard, Trophy, TrendingUp, Menu, X, User, Droplets, PlusCircle, RefreshCw, BarChart2 } from "lucide-react";
 
-// Monad Mainnet (L1 EVM-compatible)
-const monadMainnet = {
-  id: 143,
-  name: "Monad",
-  nativeCurrency: { name: "Monad", symbol: "MON", decimals: 18 },
-  rpcUrls: {
-    default: { http: ["https://rpc.monad.xyz"] },
-  },
-  blockExplorers: {
-    default: { name: "Monadscan", url: "https://monadscan.com" },
-  },
-} as const;
-
-// Monad Testnet
-const monadTestnet = {
-  id: 10143,
-  name: "Monad Testnet",
-  nativeCurrency: { name: "Monad", symbol: "MON", decimals: 18 },
-  rpcUrls: {
-    default: { http: ["https://testnet-rpc.monad.xyz"] },
-  },
-  blockExplorers: {
-    default: { name: "Monad Testnet Explorer", url: "https://testnet.monadexplorer.com" },
-  },
-  testnet: true,
-} as const;
-
-// Red local de Hardhat (solo para desarrollo)
-const localhostChain = {
-  id: 31337,
-  name: "Hardhat Local",
-  nativeCurrency: { name: "Ether", symbol: "ETH", decimals: 18 },
-  rpcUrls: {
-    default: { http: ["http://localhost:8545"] },
-  },
-  blockExplorers: {
-    default: { name: "Local", url: "http://localhost:8545" },
-  },
-} as const;
-
-const config = createConfig({
-  chains: [monadTestnet, monadMainnet, localhostChain],
-  connectors: [metaMask()],
-  transports: {
-    [monadTestnet.id]: http("https://testnet-rpc.monad.xyz"),
-    [monadMainnet.id]: http("https://rpc.monad.xyz"),
-    [localhostChain.id]: http("http://localhost:8545"),
-  },
-});
-
-const queryClient = new QueryClient();
-
 function Dashboard() {
   const { address, isConnected } = useAccount();
   const { connect } = useConnect();
+  const connectors = useConnectors();
   const { disconnect } = useDisconnect();
   const { switchChain, isPending: isSwitching } = useSwitchChain();
   const passport = useTrustLayer();
@@ -207,8 +153,8 @@ function Dashboard() {
   };
 
   const handleConnect = () => {
-    if (config.connectors[0]) {
-      connect({ connector: config.connectors[0] });
+    if (connectors[0]) {
+      connect({ connector: connectors[0] });
     }
   };
 
@@ -224,7 +170,7 @@ function Dashboard() {
               </div>
               <div>
                 <h1 className="text-2xl font-bold" style={{ color: '#FFFFFF', letterSpacing: '-0.02em' }}>
-                  <span style={{ color: '#00FF87' }}>Credi</span>Pass
+                  <span style={{ color: '#00FF87' }}>Trust</span>Layer
                 </h1>
                 <p className="text-xs" style={{ color: '#8B92A7' }}>Tu pasaporte financiero digital. Portátil y verificable en cualquier comercio.</p>
               </div>
@@ -924,12 +870,6 @@ function Dashboard() {
 }
 
 export default function Home() {
-  return (
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <Dashboard />
-      </QueryClientProvider>
-    </WagmiProvider>
-  );
+  return <Dashboard />;
 }
 

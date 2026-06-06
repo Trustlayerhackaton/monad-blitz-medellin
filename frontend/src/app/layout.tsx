@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import { Providers } from "./providers";
 
 export const metadata: Metadata = {
-  title: "Trustlayer - Tu pasaporte financiero digital",
+  title: "TrustLayer - Tu pasaporte financiero digital",
   description: "Sistema de reputación crediticia basado en blockchain",
 };
 
@@ -13,7 +14,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="es">
-      <body>{children}</body>
+      <body>
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }
