@@ -24,6 +24,8 @@ services:
       - "8000:8000"
     environment:
       DATABASE_URL: ${DATABASE_URL:-postgresql://trustlayer:trustlayer@postgres:5432/trustlayer}
+      MONAD_RPC_URL: ${MONAD_RPC_URL:-https://testnet-rpc.monad.xyz}
+      ORACLE_PRIVATE_KEY: ${ORACLE_PRIVATE_KEY:-}
     depends_on:
       postgres:
         condition: service_healthy
@@ -40,6 +42,9 @@ services:
         NEXT_PUBLIC_LOCAL_NFT_CONTRACT: ${NEXT_PUBLIC_LOCAL_NFT_CONTRACT:-}
         NEXT_PUBLIC_LOCAL_REWARD_CONTRACT: ${NEXT_PUBLIC_LOCAL_REWARD_CONTRACT:-}
         NEXT_PUBLIC_LOCAL_CCOP_CONTRACT: ${NEXT_PUBLIC_LOCAL_CCOP_CONTRACT:-}
+        NEXT_PUBLIC_WALLET_REGISTRY_ADDRESS: ${NEXT_PUBLIC_WALLET_REGISTRY_ADDRESS:-}
+        NEXT_PUBLIC_RISK_ORACLE_ADDRESS: ${NEXT_PUBLIC_RISK_ORACLE_ADDRESS:-}
+        NEXT_PUBLIC_VALIDATION_RECORD_ADDRESS: ${NEXT_PUBLIC_VALIDATION_RECORD_ADDRESS:-}
     ports:
       - "3000:3000"
     depends_on:

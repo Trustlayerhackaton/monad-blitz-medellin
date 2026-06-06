@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TrustLayer — Demo</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════
+     HEADER
+     ════════════════════════════════════════════════════════ -->
+<header id="header">
+  <div class="logo">
+    <div class="logo-icon">TL</div>
+    <div>
+      <div class="logo-text">TrustLayer</div>
+      <div class="logo-sub">Identidad Financiera Descentralizada</div>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <!-- Connect button (shown when not connected) -->
+    <button id="btn-connect" class="btn btn-primary btn-sm">
+      🦊 Conectar Wallet
+    </button>
+
+    <!-- Wallet area (hidden until connected) -->
+    <div id="wallet-area" class="hidden flex items-center gap-2">
+      <button id="wallet-chip-btn" class="wallet-chip cursor-pointer" style="border:none;cursor:pointer;background:var(--bg-card)">
+        <div class="wallet-dot"></div>
+        <span id="wallet-addr">0x7099...C79C8</span>
+        <span class="badge badge-green" style="font-size:.65rem;margin-left:4px">Monad Testnet</span>
+      </button>
+    </div>
+
+    <!-- Notification bell -->
+    <div class="notif-wrap relative">
+      <button class="btn-icon" title="Notificaciones">
+        🔔
+        <span class="notif-badge">2</span>
+      </button>
+      <div id="notif-dropdown" class="notif-dropdown hidden">
+        <div class="notif-header">Notificaciones</div>
+        <div id="notif-list"></div>
+        <div style="padding:12px 16px;text-align:center">
+          <button class="btn btn-ghost btn-sm w-full" onclick="document.getElementById('notif-dropdown').classList.add('hidden')">Ver todas</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ════════════════════════════════════════════════════════
+     MAIN
+     ════════════════════════════════════════════════════════ -->
+<main id="app">
+
+  <!-- TAB NAV -->
+  <nav id="tab-nav">
+    <button class="tab-btn active" data-tab="tab-resumen">🏠 Resumen</button>
+    <button class="tab-btn" data-tab="tab-recompensas">🎁 Recompensas</button>
+    <button class="tab-btn" data-tab="tab-creditos">💳 Créditos</button>
+    <button class="tab-btn" data-tab="tab-logros">🏆 Logros</button>
+    <button class="tab-btn" data-tab="tab-estadisticas">📊 Estadísticas</button>
+    <button class="tab-btn" data-tab="tab-actividad">⚡ Actividad</button>
+  </nav>
+
+  <!-- ══════════════════════════════════════════════
+       TAB 1 — RESUMEN
+       ══════════════════════════════════════════════ -->
+  <div id="tab-resumen" class="tab-panel active">
+
+    <!-- Welcome Card -->
+    <div class="welcome-card">
+      <div class="grid-2" style="gap:24px;align-items:center">
+        <div>
+          <div class="level-badge">💎 NFT #42 · Platino</div>
+          <div class="score-hero">850</div>
+          <div class="score-label">Payment Score</div>
+          <div class="flex items-center gap-3 mt-4">
+            <span class="badge badge-green">🔥 Racha 5</span>
+            <span class="badge badge-gold">🪙 1,250 mMonad</span>
+            <span class="badge badge-cyan">✅ Verificado on-chain</span>
+          </div>
+        </div>
+        <div style="background:var(--bg-nested);border-radius:var(--radius-lg);padding:18px">
+          <div style="font-size:.8125rem;color:var(--muted);margin-bottom:10px;font-weight:600">Próximo hito</div>
+          <div style="font-size:.875rem;margin-bottom:6px">🎯 Score 900 → <strong style="color:var(--accent)">+50 mMonad</strong></div>
+          <div style="font-size:.875rem;margin-bottom:6px">🔥 Racha 10 → <strong style="color:var(--cyan)">Decena Perfecta</strong></div>
+          <div style="font-size:.875rem">💎 Score 950 → <strong style="color:var(--gold)">Nivel Diamante</strong></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Investigation toggle -->
+    <div class="investigation-bar">
+      <div>
+        <div class="question">¿Deseas realizar una investigación financiera?</div>
+        <div class="sub">Analiza múltiples wallets y obtén tu Credit Score + Trustworthy Score</div>
+      </div>
+      <div class="inv-actions">
+        <button id="btn-inv-no"  class="btn-inv-no">NO</button>
+        <button id="btn-inv-yes" class="btn-inv-yes">SÍ →</button>
+      </div>
+    </div>
+
+    <!-- TrustScore Card (hidden until analysis complete OR wallet connected) -->
+    <div id="trust-score-card" class="hidden">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+        <div>
+          <h2>Scores de Investigación</h2>
+          <p style="font-size:.8125rem;margin-top:2px">Generados por IA · Registrados on-chain</p>
+        </div>
+        <span class="badge badge-cyan">✅ Verificado</span>
+      </div>
+
+      <div class="trust-gauges">
+        <!-- Credit Score -->
+        <div class="gauge-wrap">
+          <div id="gauge-credit"></div>
+          <div>
+            <div class="gauge-label text-center font-semibold" style="color:var(--text)">Credit Score</div>
+            <div style="text-align:center;margin-top:4px"><span id="credit-risk-label" class="gauge-risk risk-medium">Riesgo Medio</span></div>
+          </div>
+          <div style="width:100%;margin-top:8px">
+            <div style="font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:8px">Factores</div>
+            <div class="breakdown-row mb-2">
+              <span>Historial tx</span>
+              <div class="breakdown-bar"><div class="breakdown-fill" style="width:78%"></div></div>
+              <span class="breakdown-pct">78%</span>
+            </div>
+            <div class="breakdown-row mb-2">
+              <span>Balance prom.</span>
+              <div class="breakdown-bar"><div class="breakdown-fill" style="width:65%"></div></div>
+              <span class="breakdown-pct">65%</span>
+            </div>
+            <div class="breakdown-row mb-2">
+              <span>Contrapartes</span>
+              <div class="breakdown-bar"><div class="breakdown-fill" style="width:82%"></div></div>
+              <span class="breakdown-pct">82%</span>
+            </div>
+            <div class="breakdown-row">
+              <span>Días activos</span>
+              <div class="breakdown-bar"><div class="breakdown-fill" style="width:90%"></div></div>
+              <span class="breakdown-pct">90%</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Trustworthy Score -->
+        <div class="gauge-wrap">
+          <div id="gauge-trust"></div>
+          <div>
+            <div class="gauge-label text-center font-semibold" style="color:var(--text)">Trustworthy Score</div>
+            <div style="text-align:center;margin-top:4px"><span id="trust-risk-label" class="gauge-risk risk-medium">Riesgo Medio</span></div>
+          </div>
+          <div style="width:100%;margin-top:8px">
+            <div style="font-size:.75rem;font-weight:600;color:var(--muted);margin-bottom:8px">Factores</div>
+            <div class="breakdown-row mb-2">
+              <span>Historial civil</span>
+              <div class="breakdown-bar"><div class="breakdown-fill" style="width:72%"></div></div>
+              <span class="breakdown-pct">72%</span>
+            </div>
+            <div class="breakdown-row mb-2">
+              <span>Procesos abiertos</span>
+              <div class="breakdown-bar"><div class="breakdown-fill" style="width:95%"></div></div>
+              <span class="breakdown-pct">95%</span>
+            </div>
+            <div class="breakdown-row mb-2">
+              <span>Registro RUES</span>
+              <div class="breakdown-bar"><div class="breakdown-fill" style="width:60%"></div></div>
+              <span class="breakdown-pct">60%</span>
+            </div>
+            <div class="breakdown-row">
+              <span>Verificación ID</span>
+              <div class="breakdown-bar"><div class="breakdown-fill" style="width:88%"></div></div>
+              <span class="breakdown-pct">88%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Risk legend -->
+      <div class="flex gap-3 mt-4" style="justify-content:center;flex-wrap:wrap">
+        <span class="badge badge-green">● Bajo ≥800</span>
+        <span class="badge badge-gold">● Medio 600–799</span>
+        <span style="display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:999px;font-size:.75rem;font-weight:600;background:rgba(255,140,0,.15);color:#FF8C00">● Alto 400–599</span>
+        <span class="badge badge-red">● Crítico &lt;400</span>
+      </div>
+    </div>
+
+    <!-- Progress Chart -->
+    <div class="card progress-card" style="margin-top:20px">
+      <h3 style="margin-bottom:16px">Progreso</h3>
+      <div class="progress-item">
+        <div class="progress-meta">
+          <span>Payment Score</span>
+          <span style="color:var(--accent);font-weight:600">850 / 1000</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill" style="width:85%"></div></div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-meta">
+          <span>Pagos Consecutivos</span>
+          <span style="color:var(--cyan);font-weight:600">5 / 12</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill cyan" style="width:41.6%"></div></div>
+      </div>
+      <div class="progress-item">
+        <div class="progress-meta">
+          <span>mMonad acumulados</span>
+          <span style="color:var(--gold);font-weight:600">1,250 / 2,000</span>
+        </div>
+        <div class="progress-track"><div class="progress-fill gold" style="width:62.5%"></div></div>
+      </div>
+    </div>
+
+    <div class="grid-2" style="margin-top:20px">
+      <!-- Recommended Actions -->
+      <div class="card">
+        <h3 style="margin-bottom:14px">Acciones Recomendadas</h3>
+        <div class="action-item">
+          <div class="action-check done">✓</div>
+          <span class="action-text done">Registrar NFT de crédito</span>
+          <span class="action-points">+50 pts</span>
+        </div>
+        <div class="action-item">
+          <div class="action-check"></div>
+          <span class="action-text">Alcanzar racha de 10 pagos</span>
+          <span class="action-points">+100 pts</span>
+        </div>
+        <div class="action-item">
+          <div class="action-check"></div>
+          <span class="action-text">Realizar análisis de wallets</span>
+          <span class="action-points">+75 pts</span>
+        </div>
+        <div class="action-item">
+          <div class="action-check"></div>
+          <span class="action-text">Compartir logro en redes</span>
+          <span class="action-points">+25 pts</span>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="card">
+        <h3 style="margin-bottom:14px">Acciones Rápidas</h3>
+        <div class="quick-grid">
+          <button class="quick-btn" data-msg="Pago registrado (modo demo)">
+            <div class="quick-icon" style="background:rgba(0,255,135,.12)">💳</div>
+            Registrar Pago
+          </button>
+          <button class="quick-btn" data-msg="Reporte exportado (modo demo)">
+            <div class="quick-icon" style="background:rgba(0,217,255,.12)">📄</div>
+            Exportar Reporte
+          </button>
+          <button class="quick-btn" data-msg="Alertas configuradas (modo demo)">
+            <div class="quick-icon" style="background:rgba(255,170,0,.12)">🔔</div>
+            Configurar Alertas
+          </button>
+          <button class="quick-btn" data-msg="Abriendo centro de ayuda...">
+            <div class="quick-icon" style="background:rgba(139,146,167,.1)">❓</div>
+            Ayuda
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Goals Tracker -->
+    <div class="card" style="margin-top:20px">
+      <h3 style="margin-bottom:14px">Objetivos Activos</h3>
+      <div id="goals-container" class="grid-3"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       TAB 2 — RECOMPENSAS
+       ══════════════════════════════════════════════ -->
+  <div id="tab-recompensas" class="tab-panel">
+
+    <div class="grid-2" style="margin-bottom:20px">
+      <!-- Summary stats -->
+      <div class="card">
+        <h3 style="margin-bottom:16px">Tus Recompensas</h3>
+        <div style="text-align:center;padding:16px 0">
+          <div style="font-size:3rem;font-weight:900;color:var(--gold)">1,250</div>
+          <div style="color:var(--muted);font-size:.875rem">mMonad acumulados</div>
+        </div>
+        <div class="card-nested" style="margin-top:8px">
+          <div style="display:flex;justify-content:space-between;font-size:.8125rem;margin-bottom:6px">
+            <span style="color:var(--muted)">Valor estimado en COP</span>
+            <span style="color:var(--accent);font-weight:700">$125,000</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.8125rem;margin-bottom:6px">
+            <span style="color:var(--muted)">Multiplicador actual</span>
+            <span style="color:var(--cyan);font-weight:700">1.5× (Platino)</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.8125rem">
+            <span style="color:var(--muted)">Próxima recompensa</span>
+            <span style="font-weight:700">75 mMonad</span>
+          </div>
+        </div>
+      </div>
+      <!-- Pie Chart -->
+      <div class="card">
+        <h3 style="margin-bottom:12px">Distribución de Recompensas</h3>
+        <div class="chart-wrap"><canvas id="pie-chart"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Rewards Table -->
+    <div class="card" style="margin-bottom:20px">
+      <h3 style="margin-bottom:14px">Tabla de Recompensas por Nivel</h3>
+      <div style="overflow-x:auto">
+        <table class="rewards-table" style="width:100%">
+          <thead>
+            <tr>
+              <th>Nivel</th>
+              <th>Multiplicador</th>
+              <th>5 pagos</th>
+              <th>10 pagos</th>
+              <th>15 pagos</th>
+            </tr>
+          </thead>
+          <tbody id="rewards-tbody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Rewards Calculator -->
+    <div class="card">
+      <h3 style="margin-bottom:4px">Calculadora de Recompensas</h3>
+      <p style="font-size:.8125rem;margin-bottom:16px">¿Cuánto ganarías con más pagos? (Nivel Platino)</p>
+      <div class="calc-input-row">
+        <span style="font-size:.875rem;color:var(--muted)">Próximos pagos:</span>
+        <input id="calc-slider" type="range" min="1" max="30" value="10" class="calc-slider">
+        <div id="calc-display" class="calc-value">10</div>
+      </div>
+      <div style="overflow-x:auto">
+        <table style="width:100%;border-collapse:collapse">
+          <thead>
+            <tr style="border-bottom:1px solid var(--border)">
+              <th style="text-align:left;padding:8px 14px;color:var(--muted);font-size:.75rem">Pago #</th>
+              <th style="text-align:left;padding:8px 14px;color:var(--muted);font-size:.75rem">Base</th>
+              <th style="text-align:left;padding:8px 14px;color:var(--muted);font-size:.75rem">Bonus racha</th>
+              <th style="text-align:left;padding:8px 14px;color:var(--muted);font-size:.75rem">Total acumulado</th>
+            </tr>
+          </thead>
+          <tbody id="calc-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       TAB 3 — CRÉDITOS
+       ══════════════════════════════════════════════ -->
+  <div id="tab-creditos" class="tab-panel">
+
+    <!-- Credit Line Card -->
+    <div class="credit-card-visual">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+        <span class="badge badge-green">✅ Pre-aprobado</span>
+        <span style="font-size:.8125rem;color:var(--muted)">Sistecrédito · Monad Testnet</span>
+      </div>
+      <div style="font-size:.8125rem;color:var(--muted);margin-bottom:4px">Límite de crédito disponible</div>
+      <div class="credit-amount">$5,000,000 COP</div>
+      <div style="margin-top:6px;font-size:.875rem;color:var(--muted)">$3,500,000 disponibles de $5,000,000</div>
+      <div class="progress-track" style="margin-top:12px;height:6px">
+        <div class="progress-fill" style="width:30%"></div>
+      </div>
+      <div class="flex gap-6 mt-4">
+        <div>
+          <div style="font-size:.75rem;color:var(--muted)">Tasa mensual</div>
+          <div style="font-weight:700">1.8%</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--muted)">Cuota mensual</div>
+          <div style="font-weight:700">$195,000</div>
+        </div>
+        <div>
+          <div style="font-size:.75rem;color:var(--muted)">Plazo máx.</div>
+          <div style="font-weight:700">36 meses</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Historial de créditos -->
+    <div class="card" style="margin-bottom:20px">
+      <h3 style="margin-bottom:14px">Historial de Créditos</h3>
+      <div class="card-nested" style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;margin-bottom:8px">
+          <div>
+            <div style="font-weight:600">Crédito activo · Sistecrédito</div>
+            <div style="font-size:.8125rem;color:var(--muted)">$2,000,000 · Inicio: Oct 2024</div>
+          </div>
+          <span class="badge badge-green">Activo</span>
+        </div>
+        <div style="font-size:.8125rem;margin-bottom:6px">5 de 12 cuotas pagadas</div>
+        <div class="progress-track"><div class="progress-fill" style="width:41.6%"></div></div>
+      </div>
+      <div class="card-nested" style="margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between">
+          <div>
+            <div style="font-weight:600">Crédito completado</div>
+            <div style="font-size:.8125rem;color:var(--muted)">$1,500,000 · Finalizado: Feb 2024</div>
+          </div>
+          <span class="badge badge-cyan">Pagado</span>
+        </div>
+      </div>
+      <div class="card-nested">
+        <div style="display:flex;justify-content:space-between">
+          <div>
+            <div style="font-weight:600">Crédito completado</div>
+            <div style="font-size:.8125rem;color:var(--muted)">$1,000,000 · Finalizado: Sep 2023</div>
+          </div>
+          <span class="badge badge-cyan">Pagado</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Score Prediction -->
+    <div class="card">
+      <h3 style="margin-bottom:4px">Predicción de Score</h3>
+      <p style="font-size:.8125rem;margin-bottom:16px">Proyecciones basadas en IA con tu historial actual</p>
+      <div class="grid-3">
+        <div class="prediction-card">
+          <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px">1 mes</div>
+          <div class="prediction-delta">+15</div>
+          <div style="font-size:.875rem;font-weight:600;color:var(--text);margin:4px 0">865</div>
+          <div class="prediction-conf">Confianza: 92%</div>
+        </div>
+        <div class="prediction-card">
+          <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px">3 meses</div>
+          <div class="prediction-delta">+35</div>
+          <div style="font-size:.875rem;font-weight:600;color:var(--text);margin:4px 0">885</div>
+          <div class="prediction-conf">Confianza: 85%</div>
+        </div>
+        <div class="prediction-card">
+          <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px">6 meses</div>
+          <div class="prediction-delta">+72</div>
+          <div style="font-size:.875rem;font-weight:600;color:var(--text);margin:4px 0">922</div>
+          <div class="prediction-conf">Confianza: 74%</div>
+        </div>
+      </div>
+      <div class="card-nested" style="margin-top:16px">
+        <div style="font-weight:600;margin-bottom:6px">💡 Consejo de IA</div>
+        <p style="font-size:.8125rem">Con tu nivel Platino y 5 pagos consecutivos, estás en camino óptimo. Mantén la racha durante 5 pagos más para desbloquear el bono de Decena Perfecta y proyectar un score de 900+ en 3 meses.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       TAB 4 — LOGROS
+       ══════════════════════════════════════════════ -->
+  <div id="tab-logros" class="tab-panel">
+
+    <!-- Reputation NFT -->
+    <div class="nft-card">
+      <div class="nft-icon">💎</div>
+      <div class="nft-title">Passport NFT #42 — Platino</div>
+      <div style="color:var(--muted);font-size:.875rem;margin-top:4px">TrustLayer · Monad Testnet</div>
+      <div class="flex gap-4 mt-4" style="justify-content:center">
+        <div style="text-align:center">
+          <div style="font-size:1.5rem;font-weight:700;color:var(--accent)">850</div>
+          <div style="font-size:.75rem;color:var(--muted)">Payment Score</div>
+        </div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div style="text-align:center">
+          <div style="font-size:1.5rem;font-weight:700;color:var(--cyan)">5</div>
+          <div style="font-size:.75rem;color:var(--muted)">Racha</div>
+        </div>
+        <div style="width:1px;background:var(--border)"></div>
+        <div style="text-align:center">
+          <div style="font-size:1.5rem;font-weight:700;color:var(--gold)">1,250</div>
+          <div style="font-size:.75rem;color:var(--muted)">mMonad</div>
+        </div>
+      </div>
+      <div class="flex gap-2 mt-4" style="justify-content:center">
+        <span class="badge badge-cyan">⛓ Verificado On-Chain</span>
+        <span class="badge badge-green">🎖 Nivel Platino</span>
+      </div>
+    </div>
+
+    <!-- Achievements Grid -->
+    <div class="card">
+      <h3 style="margin-bottom:14px">Insignias</h3>
+      <div id="achievements-grid" class="achievement-grid"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       TAB 5 — ESTADÍSTICAS
+       ══════════════════════════════════════════════ -->
+  <div id="tab-estadisticas" class="tab-panel">
+
+    <!-- Trend Chart -->
+    <div class="card" style="margin-bottom:20px">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+        <div>
+          <h3>Evolución del Score</h3>
+          <p style="font-size:.8125rem">Últimos 6 meses</p>
+        </div>
+        <span class="badge badge-green">↑ +60 pts en 6 meses</span>
+      </div>
+      <div class="chart-wrap"><canvas id="trend-chart"></canvas></div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Comparison Card -->
+      <div class="card">
+        <h3 style="margin-bottom:14px">Comparativa</h3>
+        <div style="margin-bottom:14px">
+          <div class="comparison-bar">
+            <span class="comparison-label">Tú</span>
+            <div class="comparison-track">
+              <div class="comparison-fill" style="width:85%;background:var(--accent)"></div>
+            </div>
+            <strong style="margin-left:8px;font-size:.875rem">850</strong>
+          </div>
+          <div class="comparison-bar">
+            <span class="comparison-label">Promedio</span>
+            <div class="comparison-track">
+              <div class="comparison-fill" style="width:82%;background:var(--muted)"></div>
+            </div>
+            <strong style="margin-left:8px;font-size:.875rem;color:var(--muted)">820</strong>
+          </div>
+        </div>
+        <div class="card-nested">
+          <span class="badge badge-green" style="margin-bottom:8px;display:inline-block">+3.7% sobre el promedio</span>
+          <p style="font-size:.8125rem">Estás en el percentil 85 de usuarios TrustLayer. ¡Sigue así para llegar al top 10% con score 920+!</p>
+        </div>
+
+        <div style="margin-top:14px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:.8125rem">
+            <span style="color:var(--muted)">Puntos por pago</span>
+            <strong>47 pts</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px;font-size:.8125rem">
+            <span style="color:var(--muted)">Eficiencia de racha</span>
+            <strong style="color:var(--accent)">95%</strong>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:.8125rem">
+            <span style="color:var(--muted)">Total pagos registrados</span>
+            <strong>18</strong>
+          </div>
+        </div>
+      </div>
+
+      <!-- Leaderboard -->
+      <div class="card">
+        <h3 style="margin-bottom:14px">Ranking Global</h3>
+        <div id="leaderboard-list"></div>
+        <div style="text-align:center;margin-top:12px">
+          <span class="badge badge-green">Tu posición: #1 · Percentil 99</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════
+       TAB 6 — ACTIVIDAD
+       ══════════════════════════════════════════════ -->
+  <div id="tab-actividad" class="tab-panel">
+    <div class="grid-2">
+      <!-- Activity Feed -->
+      <div class="card">
+        <h3 style="margin-bottom:14px">Feed de Actividad</h3>
+        <div id="activity-list"></div>
+        <button class="btn btn-ghost btn-sm w-full" style="margin-top:10px">Ver más actividad</button>
+      </div>
+
+      <!-- Stats summary -->
+      <div class="flex-col gap-4">
+        <div class="card">
+          <h3 style="margin-bottom:14px">Resumen del Mes</h3>
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:.875rem">
+              <span style="color:var(--muted)">Pagos registrados</span>
+              <strong>4</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:.875rem">
+              <span style="color:var(--muted)">mMonad ganados</span>
+              <strong style="color:var(--gold)">+300</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border);font-size:.875rem">
+              <span style="color:var(--muted)">Score ganado</span>
+              <strong style="color:var(--accent)">+28 pts</strong>
+            </div>
+            <div style="display:flex;justify-content:space-between;padding:10px 0;font-size:.875rem">
+              <span style="color:var(--muted)">Logros desbloqueados</span>
+              <strong>1</strong>
+            </div>
+          </div>
+        </div>
+
+        <!-- Share panel stub -->
+        <div class="card">
+          <h3 style="margin-bottom:12px">Compartir Logro</h3>
+          <div class="card-nested" style="text-align:center;padding:20px">
+            <div style="font-size:2rem;margin-bottom:8px">🏆</div>
+            <div style="font-weight:600;margin-bottom:4px">Nivel Platino · 850 pts</div>
+            <div style="font-size:.8125rem;color:var(--muted);margin-bottom:14px">@TrustLayer · Monad Testnet</div>
+            <div class="flex gap-2" style="justify-content:center">
+              <button class="btn btn-ghost btn-sm" onclick="showToast('Compartido en X (modo demo)','success')">𝕏 Twitter</button>
+              <button class="btn btn-ghost btn-sm" onclick="showToast('Enlace copiado (modo demo)','info')">🔗 Copiar</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- ════════════════════════════════════════════════════════
+     AI CHAT
+     ════════════════════════════════════════════════════════ -->
+<button id="ai-chat-btn" title="Asistente IA">🤖</button>
+<div id="ai-chat-panel" class="hidden">
+  <div class="chat-header">
+    <span style="font-weight:600">Asistente TrustLayer</span>
+    <button id="chat-close" class="modal-close">✕</button>
+  </div>
+  <div id="chat-messages" class="chat-messages"></div>
+  <div class="chat-input-row">
+    <input id="chat-input-field" class="chat-input" placeholder="Escribe tu pregunta..." autocomplete="off">
+    <button id="chat-send" class="btn btn-primary btn-sm">Enviar</button>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     MODAL — WALLET LIST FORM
+     ════════════════════════════════════════════════════════ -->
+<div id="modal-wallet-form" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <h2>Análisis de Score</h2>
+        <div style="font-size:.8125rem;color:var(--muted);margin-top:2px">Agrega tus wallets para investigar</div>
+      </div>
+      <button id="wallet-form-close" class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="section-title">Wallets a analizar</div>
+      <div id="wallet-inputs"></div>
+      <button id="btn-add-wallet" class="btn btn-ghost btn-sm" style="margin-top:6px">
+        + Agregar Wallet
+      </button>
+
+      <div style="height:1px;background:var(--border);margin:20px 0"></div>
+
+      <div class="optional-label">
+        Cédula / SSN
+        <span class="optional-badge">Opcional</span>
+      </div>
+      <div class="form-row">
+        <input id="national-id-input" class="form-input" type="text" placeholder="Número de identificación">
+        <select class="form-select">
+          <option value="CO">🇨🇴 CO</option>
+          <option value="MX">🇲🇽 MX</option>
+          <option value="US">🇺🇸 US</option>
+          <option value="BR">🇧🇷 BR</option>
+        </select>
+      </div>
+      <p style="font-size:.75rem;margin-top:6px">Usado para el Trustworthy Score. Se procesa de forma privada.</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" id="wallet-form-cancel"
+        onclick="document.getElementById('modal-wallet-form').classList.add('hidden')">
+        Cancelar
+      </button>
+      <button id="btn-wallet-continue" class="btn btn-primary">
+        Continuar →
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     MODAL — SCORE PAYMENT
+     ════════════════════════════════════════════════════════ -->
+<div id="modal-payment" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header">
+      <div>
+        <h2>Generar Scores</h2>
+        <div style="font-size:.8125rem;color:var(--muted);margin-top:2px">Proceso verificado en Monad</div>
+      </div>
+      <button id="payment-close" class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+
+      <!-- Stepper -->
+      <div class="stepper">
+        <div class="step-item active" id="step-item-0">
+          <div class="step-dot" id="step-dot-0">1</div>
+          <div class="step-label" id="step-lbl-0">Confirmar</div>
+        </div>
+        <div class="step-item" id="step-item-1">
+          <div class="step-dot" id="step-dot-1">2</div>
+          <div class="step-label" id="step-lbl-1">Pagando</div>
+        </div>
+        <div class="step-item" id="step-item-2">
+          <div class="step-dot" id="step-dot-2">3</div>
+          <div class="step-label" id="step-lbl-2">Generando</div>
+        </div>
+        <div class="step-item" id="step-item-3">
+          <div class="step-dot" id="step-dot-3">4</div>
+          <div class="step-label" id="step-lbl-3">Listo</div>
+        </div>
+      </div>
+
+      <!-- Step 0: Confirm -->
+      <div class="payment-step" id="ps-0">
+        <div>
+          <div style="font-weight:600;margin-bottom:10px">Wallets a analizar:</div>
+          <div class="wallet-summary" id="wallet-summary-list"></div>
+          <div class="fee-row">
+            <span style="color:var(--muted)">Fee de análisis</span>
+            <strong style="color:var(--accent)">0.01 MON</strong>
+          </div>
+          <div class="fee-row">
+            <span style="color:var(--muted)">Red</span>
+            <strong>Monad Testnet</strong>
+          </div>
+          <div class="fee-row">
+            <span style="color:var(--muted)">Scores generados</span>
+            <strong>Credit Score + Trustworthy Score</strong>
+          </div>
+          <div style="margin-top:16px">
+            <button id="btn-pay-generate" class="btn btn-primary w-full">
+              💳 Pagar y Generar Score
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 1: Paying -->
+      <div class="payment-step hidden" id="ps-1">
+        <div style="text-align:center;padding:16px 0">
+          <div class="spinner"></div>
+          <div style="font-weight:600;margin-bottom:6px">Procesando pago en Monad...</div>
+          <div style="font-size:.8125rem;color:var(--muted)">Por favor espera mientras se confirma la transacción</div>
+        </div>
+      </div>
+
+      <!-- Step 2: Generating -->
+      <div class="payment-step hidden" id="ps-2">
+        <div style="text-align:center;padding:16px 0">
+          <div class="spinner" style="border-top-color:var(--cyan)"></div>
+          <div style="font-weight:600;margin-bottom:6px">Calculando scores con IA...</div>
+          <div style="font-size:.8125rem;color:var(--muted)">Neural Network + Random Forest · Monad RPC</div>
+          <div style="margin-top:12px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+            <span class="badge badge-muted">📡 Leyendo wallets...</span>
+            <span class="badge badge-muted">🧠 Procesando IA...</span>
+            <span class="badge badge-muted">⛓ Registrando on-chain...</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3: Done -->
+      <div class="payment-step hidden" id="ps-3">
+        <div style="text-align:center;padding:8px 0 16px">
+          <div style="font-size:2.5rem;margin-bottom:8px">✅</div>
+          <div style="font-size:1.1rem;font-weight:700;margin-bottom:4px">¡Scores Generados!</div>
+          <div style="font-size:.8125rem;color:var(--muted);margin-bottom:20px">Registrados on-chain en Monad Testnet</div>
+
+          <div class="grid-2" style="gap:16px;margin-bottom:16px">
+            <div class="score-reveal" style="background:var(--bg-nested);border-radius:var(--radius);padding:16px">
+              <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px">Credit Score</div>
+              <div id="result-credit-score" class="score-reveal-num">0</div>
+              <div style="font-size:.8125rem;color:var(--gold);margin-top:4px">Riesgo Medio</div>
+            </div>
+            <div class="score-reveal" style="background:var(--bg-nested);border-radius:var(--radius);padding:16px">
+              <div style="font-size:.75rem;color:var(--muted);margin-bottom:6px">Trustworthy Score</div>
+              <div id="result-trust-score" class="score-reveal-num">0</div>
+              <div style="font-size:.8125rem;color:var(--gold);margin-top:4px">Riesgo Medio</div>
+            </div>
+          </div>
+
+          <button id="btn-view-dashboard" class="btn btn-primary w-full">
+            Ver en Dashboard →
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════
+     MODAL — USER PROFILE
+     ════════════════════════════════════════════════════════ -->
+<div id="modal-profile" class="modal-overlay hidden">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h2>Perfil de Usuario</h2>
+      <button id="profile-close" class="modal-close">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="profile-header">
+        <div class="profile-avatar">J</div>
+        <div style="font-size:1.1rem;font-weight:700">Juan Carlos Pérez</div>
+        <div style="font-size:.875rem;color:var(--muted)">juan.perez@email.com</div>
+        <div class="flex gap-2 mt-2" style="justify-content:center">
+          <span class="badge badge-cyan">💎 Platino</span>
+          <span class="badge badge-green">Score 850</span>
+        </div>
+      </div>
+      <div class="profile-stat"><span class="label">Teléfono</span><span>+57 300 123 4567</span></div>
+      <div class="profile-stat"><span class="label">Ubicación</span><span>Bogotá, Colombia</span></div>
+      <div class="profile-stat"><span class="label">Miembro desde</span><span>15 ene 2023</span></div>
+      <div class="profile-stat"><span class="label">Total pagado</span><span>$4,500,000 COP</span></div>
+      <div class="profile-stat"><span class="label">Score promedio</span><span style="color:var(--accent)">850</span></div>
+      <div class="profile-stat"><span class="label">Créditos activos</span><span>1 activo · 2 completados</span></div>
+      <div class="profile-stat"><span class="label">Wallet</span><span style="font-family:monospace;font-size:.8125rem">0x7099...C79C8</span></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="document.getElementById('modal-profile').classList.add('hidden')">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
