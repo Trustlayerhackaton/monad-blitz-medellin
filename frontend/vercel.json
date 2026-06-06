@@ -7,6 +7,10 @@
   "env": {
     "NEXT_PUBLIC_MONAD_NFT_CONTRACT": "@monad_nft_contract",
     "NEXT_PUBLIC_MONAD_REWARD_CONTRACT": "@monad_reward_contract",
-    "NEXT_PUBLIC_MONAD_CHAIN_ID": "10143"
+    "NEXT_PUBLIC_MONAD_CCOP_CONTRACT": "@monad_ccop_contract",
+    "NEXT_PUBLIC_MONAD_MAINNET_CHAIN_ID": "143",
+    "NEXT_PUBLIC_MONAD_TESTNET_CHAIN_ID": "10143"
   }
 }
+
+

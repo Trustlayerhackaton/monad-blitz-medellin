@@ -43,7 +43,7 @@ npm run deploy:local
 ```
 
 Esto desplegará todos los contratos necesarios:
-- MockMonad (token mock de Monad)
+- MockCCOP (token mock de cCOP)
 - CreditNFT
 - RewardSystem
 - SiteVerification
@@ -77,7 +77,7 @@ Crea el archivo `frontend/.env.local` con las direcciones de los contratos:
 ```env
 NEXT_PUBLIC_LOCAL_NFT_CONTRACT=0x... (dirección de CreditNFT)
 NEXT_PUBLIC_LOCAL_REWARD_CONTRACT=0x... (dirección de RewardSystem)
-NEXT_PUBLIC_LOCAL_Monad_CONTRACT=0x... (dirección de MockMonad)
+NEXT_PUBLIC_LOCAL_CCOP_CONTRACT=0x... (dirección de MockCCOP)
 NEXT_PUBLIC_BACKEND_API_URL=http://localhost:1880
 NODE_ENV=development
 ```
@@ -142,16 +142,16 @@ await nft.mintCreditNFT(
 );
 ```
 
-### Obtener Tokens Monad
+### Obtener Tokens cCOP
 
-Para obtener tokens mock de Monad:
+Para obtener tokens mock de cCOP:
 
 ```javascript
-const MockMonad = await ethers.getContractFactory("MockMonad");
-const Monad = await MockMonad.attach("DIRECCION_DEL_CONTRATO");
+const MockCCOP = await ethers.getContractFactory("MockCCOP");
+const cCOP = await MockCCOP.attach("DIRECCION_DEL_CONTRATO");
 
 // Llamar al faucet
-await Monad.faucet();
+await cCOP.faucet();
 ```
 
 ## Solución de Problemas
@@ -206,5 +206,5 @@ tail -f frontend.log
 - Los contratos se despliegan en la red local, no en mainnet
 - Los tokens y NFTs son solo para testing
 - Los datos se pierden cuando reinicias Hardhat node
-- Para producción, usa Monad Mainnet
+- Para producción, usa la red real (Monad Mainnet / Testnet)
 

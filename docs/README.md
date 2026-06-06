@@ -1,10 +1,10 @@
-# 🎫 Trustlayer - Tu Pasaporte Financiero Digital
+# 🎫 CrediPass - Tu Pasaporte Financiero Digital
 
 > **Portátil y verificable en cualquier comercio**
 
-Trustlayer es una plataforma descentralizada basada en blockchain que permite a los usuarios crear y gestionar un pasaporte financiero digital portátil. El sistema gamifica el comportamiento de pago puntual, recompensando a los usuarios con tokens Monad y NFTs que representan su historial crediticio.
+CrediPass es una plataforma descentralizada basada en blockchain que permite a los usuarios crear y gestionar un pasaporte financiero digital portátil. El sistema gamifica el comportamiento de pago puntual, recompensando a los usuarios con tokens cCOP y NFTs que representan su historial crediticio.
 
-![Trustlayer](https://img.shields.io/badge/Trustlayer-Blockchain-blue)
+![CrediPass](https://img.shields.io/badge/CrediPass-Blockchain-blue)
 ![Solidity](https://img.shields.io/badge/Solidity-0.8.20-blue)
 ![Next.js](https://img.shields.io/badge/Next.js-14-black)
 ![License](https://img.shields.io/badge/License-MIT-green)
@@ -52,10 +52,10 @@ Este problema afecta especialmente a:
 
 ## ✨ Solución
 
-Trustlayer utiliza **blockchain y NFTs** para crear un sistema de reputación crediticia:
+CrediPass utiliza **blockchain y NFTs** para crear un sistema de reputación crediticia:
 
 1. **NFTs como Pasaportes Financieros**: Cada usuario recibe un NFT que contiene su historial de pagos, score y logros
-2. **Gamificación**: Sistema de recompensas con tokens Monad por pagos puntuales
+2. **Gamificación**: Sistema de recompensas con tokens cCOP por pagos puntuales
 3. **Portabilidad**: Los NFTs son transferibles y verificables en cualquier comercio
 4. **Transparencia**: Todo está registrado en blockchain de forma inmutable
 5. **Inclusión Financiera**: Permite a usuarios sin historial tradicional construir su reputación
@@ -69,7 +69,7 @@ Trustlayer utiliza **blockchain y NFTs** para crear un sistema de reputación cr
 - 🎫 **Pasaporte Financiero NFT**: NFT único que representa tu historial crediticio
 - 🎮 **Sistema de Gamificación**: 
   - Niveles (Bronce, Plata, Oro, Platino, Diamante)
-  - Recompensas en Monad por pagos consecutivos
+  - Recompensas en cCOP por pagos consecutivos
   - Logros y badges por hitos alcanzados
 - 📊 **Dashboard Completo**:
   - Visualización de score y progreso
@@ -107,7 +107,7 @@ Trustlayer utiliza **blockchain y NFTs** para crear un sistema de reputación cr
 - **Hardhat** - Entorno de desarrollo
 - **OpenZeppelin** - Contratos seguros y estándar
 - **ERC-721** - Estándar NFT
-- **ERC-20** - Estándar de tokens (Monad)
+- **ERC-20** - Estándar de tokens (cCOP)
 
 ### Blockchain Networks
 - **Monad** - Red principal L1 EVM-compatible (Mainnet Chain ID 143 y Testnet Chain ID 10143)
@@ -133,7 +133,7 @@ Trustlayer utiliza **blockchain y NFTs** para crear un sistema de reputación cr
 ┌─────────────────────────────────────────────────────────┐
 │                  Blockchain (Monad L1)                    │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐   │
-│  │  CreditNFT   │  │ RewardSystem │  │  MockMonad    │   │
+│  │  CreditNFT   │  │ RewardSystem │  │  MockCCOP    │   │
 │  │   (ERC-721)  │  │              │  │   (ERC-20)   │   │
 │  └──────────────┘  └──────────────┘  └──────────────┘   │
 └─────────────────────────────────────────────────────────┘
@@ -145,7 +145,7 @@ Trustlayer utiliza **blockchain y NFTs** para crear un sistema de reputación cr
 2. Frontend lee datos del NFT desde blockchain
 3. Sistema calcula score y recompensas
 4. Usuario realiza pagos → Se actualiza el NFT
-5. Usuario recibe recompensas en Monad
+5. Usuario recibe recompensas en cCOP
 
 ---
 
@@ -162,8 +162,8 @@ Trustlayer utiliza **blockchain y NFTs** para crear un sistema de reputación cr
 
 1. **Clonar el repositorio**
    ```bash
-   git clone https://github.com/USERNAME/Trustlayer.git
-   cd Trustlayer
+   git clone https://github.com/USERNAME/credipass.git
+   cd credipass
    ```
 
 2. **Instalar dependencias de contratos**
@@ -282,12 +282,12 @@ chmod +x scripts/start-all.sh
 ## 📁 Estructura del Proyecto
 
 ```
-Trustlayer/
+credipass/
 ├── contracts/              # Smart Contracts
 │   ├── contracts/          # Código Solidity
 │   │   ├── CreditNFT.sol   # NFT de reputación crediticia
 │   │   ├── RewardSystem.sol # Sistema de recompensas
-│   │   └── MockMonad.sol    # Token Monad (ERC-20)
+│   │   └── MockCCOP.sol    # Token cCOP (ERC-20)
 │   ├── scripts/            # Scripts de despliegue
 │   ├── test/               # Tests de contratos
 │   └── hardhat.config.js   # Configuración Hardhat
@@ -325,31 +325,32 @@ Trustlayer/
 
 **Funcionalidad:**
 - Representa el pasaporte financiero del usuario
-- Almacena: Payment Score, Pagos Consecutivos
+- Almacena: Payment Score, Pagos Consecutivos, Monad Wallet
 - Transferible entre wallets
 - Metadata URI para visualización
 
 **Funciones principales:**
 - `mintCreditNFT()` - Crear nuevo NFT
 - `recordPayment()` - Registrar pago y actualizar score
+- `linkMonadWallet()` - Vincular wallet de Monad
 - `getCreditData()` - Obtener datos del NFT
 
 ### RewardSystem
 
 **Funcionalidad:**
-- Distribuye recompensas en Monad
+- Distribuye recompensas en cCOP
 - Calcula recompensas basadas en nivel y racha
 - Gestiona bonos por hitos alcanzados
 
 **Funciones principales:**
 - `calculateReward()` - Calcular recompensa
-- `distributeReward()` - Distribuir Monad
+- `distributeReward()` - Distribuir cCOP
 - `getUserRewards()` - Obtener historial de recompensas
 
-### MockMonad (ERC-20)
+### MockCCOP (ERC-20)
 
 **Funcionalidad:**
-- Token de recompensa Monad
+- Token de recompensa cCOP
 - Transferible y compatible con wallets estándar
 - Usado para recompensar pagos puntuales
 
@@ -360,7 +361,7 @@ Trustlayer/
 ### Para Monad
 
 - ✅ **Alto rendimiento**: Aprovecha la ejecución paralela y finalidad rápida de Monad (L1 EVM-compatible)
-- ✅ **Token de recompensa Monad**: Token ERC-20 (mMonad) desplegado en Monad para gamificar pagos puntuales
+- ✅ **Token de recompensa cCOP**: Token ERC-20 (mcCOP) desplegado en Monad para gamificar pagos puntuales
 - ✅ **Inclusión Financiera**: Solución para usuarios no bancarizados
 - ✅ **Casos de Uso Reales**: Solución práctica para un problema real, con costos de gas bajos
 
@@ -410,7 +411,7 @@ Desarrollado para el Hackathon de Blockchain - 2025
 
 ## 📞 Contacto y Soporte
 
-- **Issues**: [GitHub Issues](https://github.com/USERNAME/Trustlayer/issues)
+- **Issues**: [GitHub Issues](https://github.com/USERNAME/credipass/issues)
 - **Documentación**: Ver carpeta `docs/`
 - **Guía Rápida**: [INICIO_RAPIDO.md](./INICIO_RAPIDO.md)
 
@@ -419,6 +420,7 @@ Desarrollado para el Hackathon de Blockchain - 2025
 ## 🙏 Agradecimientos
 
 - **OpenZeppelin** - Contratos seguros
+- **Monad** - Red blockchain L1 EVM-compatible
 - **Next.js** - Framework React
 - **Wagmi** - Hooks para Ethereum
 

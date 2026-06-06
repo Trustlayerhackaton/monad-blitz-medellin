@@ -28,7 +28,7 @@ export const creditNFTAbi = [
         components: [
           { name: "paymentScore", type: "uint256" },
           { name: "consecutivePayments", type: "uint256" },
-          { name: "linkedWallet", type: "address" },
+          { name: "monadWallet", type: "address" },
           { name: "governancePower", type: "uint256" },
           { name: "stakingAmount", type: "uint256" },
           { name: "createdAt", type: "uint256" },

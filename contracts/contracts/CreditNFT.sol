@@ -5,6 +5,16 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 
+/// @notice Vista mínima del RiskScoreOracle de TrustLayer que consume el NFT.
+/// @dev La tupla (score, timestamp, dataHash) es ABI-compatible con el struct
+///      RiskScore del oráculo (los tres miembros son estáticos de 32 bytes).
+interface IRiskScoreOracle {
+    function getScore(address subject)
+        external
+        view
+        returns (uint256 score, uint256 timestamp, bytes32 dataHash);
+}
+
 contract CreditNFT is ERC721URIStorage, Ownable {
     uint256 private _tokenIds;
 
@@ -14,7 +24,7 @@ contract CreditNFT is ERC721URIStorage, Ownable {
     struct CreditData {
         uint256 paymentScore;
         uint256 consecutivePayments;
-        address linkedWallet;
+        address monadWallet;
         uint256 governancePower;
         uint256 stakingAmount;
         uint256 createdAt;
@@ -26,9 +36,32 @@ contract CreditNFT is ERC721URIStorage, Ownable {
     mapping(address => uint256) public activeToken;
     mapping(address => bool) public authorizedMinters;
 
+    // --- Integración de riesgo (TrustLayer) ---
+
+    /// @notice Nivel de riesgo derivado del score (a mayor score, menor riesgo).
+    enum RiskLevel { LOW, MEDIUM, HIGH, CRITICAL }
+
+    /// @notice Riesgo sincronizado en el NFT desde el RiskScoreOracle.
+    /// @param riskScore Último score (0-1000) leído del oráculo.
+    /// @param level Nivel derivado de `riskScore`.
+    /// @param updatedAt Marca de tiempo de la última sincronización.
+    struct RiskInfo {
+        uint256 riskScore;
+        RiskLevel level;
+        uint256 updatedAt;
+    }
+
+    /// @notice Oráculo de riesgo de TrustLayer del que se lee el score.
+    IRiskScoreOracle public riskOracle;
+
+    /// @notice Riesgo por tokenId (separado de CreditData para no romper su ABI).
+    mapping(uint256 => RiskInfo) public tokenRisk;
+
     event CreditNFTMinted(uint256 indexed tokenId, address indexed owner, uint256 paymentScore, uint256 consecutivePayments);
     event PaymentRecorded(uint256 indexed tokenId, uint256 newScore, uint256 consecutivePayments);
-    event WalletLinked(uint256 indexed tokenId, address indexed linkedWallet);
+    event MonadWalletLinked(uint256 indexed tokenId, address indexed monadWallet);
+    event RiskOracleUpdated(address indexed oracle);
+    event RiskScoreRefreshed(uint256 indexed tokenId, uint256 riskScore, RiskLevel level);
 
     constructor(address initialOwner) ERC721("Credit Reputation NFT", "CREDIT") Ownable(initialOwner) {
         authorizedMinters[msg.sender] = true;
@@ -67,7 +100,7 @@ contract CreditNFT is ERC721URIStorage, Ownable {
         creditData[newTokenId] = CreditData({
             paymentScore: paymentScore,
             consecutivePayments: consecutivePayments,
-            linkedWallet: address(0),
+            monadWallet: address(0),
             governancePower: governancePower,
             stakingAmount: 0,
             createdAt: block.timestamp,
@@ -96,11 +129,11 @@ contract CreditNFT is ERC721URIStorage, Ownable {
         emit PaymentRecorded(tokenId, newScore, consecutivePayments);
     }
 
-    function linkWallet(uint256 tokenId, address linkedWallet) external {
+    function linkMonadWallet(uint256 tokenId, address monadWallet) external {
         require(_ownerOf(tokenId) == msg.sender, "Not the owner");
-        require(linkedWallet != address(0), "Invalid wallet address");
-        creditData[tokenId].linkedWallet = linkedWallet;
-        emit WalletLinked(tokenId, linkedWallet);
+        require(monadWallet != address(0), "Invalid Monad wallet");
+        creditData[tokenId].monadWallet = monadWallet;
+        emit MonadWalletLinked(tokenId, monadWallet);
     }
 
     function getReputation(uint256 tokenId) external view returns (uint256) {
@@ -120,5 +153,59 @@ contract CreditNFT is ERC721URIStorage, Ownable {
 
     function calculateGovernancePower(uint256 paymentScore, uint256 consecutivePayments) internal pure returns (uint256) {
         return (paymentScore / 10) + (consecutivePayments * 2);
+    }
+
+    // --- Integración de riesgo (TrustLayer) ---
+
+    /// @notice Configura el RiskScoreOracle del que se sincroniza el riesgo. Solo owner.
+    /// @param oracle Dirección del RiskScoreOracle desplegado.
+    function setRiskOracle(address oracle) external onlyOwner {
+        require(oracle != address(0), "Invalid oracle");
+        riskOracle = IRiskScoreOracle(oracle);
+        emit RiskOracleUpdated(oracle);
+    }
+
+    /// @notice Sincroniza en el NFT el último score publicado en el oráculo para
+    ///         el dueño del token, y deriva su nivel de riesgo.
+    /// @dev Solo copia datos públicos ya verificados on-chain en el oráculo, por
+    ///      lo que cualquiera puede refrescar cualquier token (no hay riesgo de
+    ///      manipulación; el dato proviene del oráculo firmado). Revierte si el
+    ///      token no existe, el oráculo no está configurado o no hay score.
+    /// @param tokenId Token a refrescar.
+    /// @return level Nivel de riesgo resultante.
+    function refreshScore(uint256 tokenId) external returns (RiskLevel level) {
+        require(_ownerOf(tokenId) != address(0), "Token does not exist");
+        require(address(riskOracle) != address(0), "Risk oracle not set");
+
+        (uint256 score, uint256 ts, ) = riskOracle.getScore(ownerOf(tokenId));
+        require(ts != 0, "No score available");
+
+        level = _levelFromScore(score);
+        tokenRisk[tokenId] = RiskInfo({ riskScore: score, level: level, updatedAt: block.timestamp });
+
+        emit RiskScoreRefreshed(tokenId, score, level);
+    }
+
+    /// @notice Deriva el nivel de riesgo a partir del score (0-1000).
+    /// @dev Umbrales: >=750 LOW, >=500 MEDIUM, >=250 HIGH, resto CRITICAL.
+    function _levelFromScore(uint256 score) internal pure returns (RiskLevel) {
+        if (score >= 750) return RiskLevel.LOW;
+        if (score >= 500) return RiskLevel.MEDIUM;
+        if (score >= 250) return RiskLevel.HIGH;
+        return RiskLevel.CRITICAL;
+    }
+
+    /// @notice Nivel de riesgo actualmente sincronizado en un token.
+    /// @param tokenId Token consultado.
+    /// @return Nivel de riesgo (por defecto LOW si nunca se ha refrescado).
+    function getRiskLevel(uint256 tokenId) external view returns (RiskLevel) {
+        return tokenRisk[tokenId].level;
+    }
+
+    /// @notice Información de riesgo completa sincronizada en un token.
+    /// @param tokenId Token consultado.
+    /// @return El registro RiskInfo (riskScore/level/updatedAt).
+    function getRiskInfo(uint256 tokenId) external view returns (RiskInfo memory) {
+        return tokenRisk[tokenId];
     }
 }

@@ -12,7 +12,7 @@
 2. **Contratos configurados para desarrollo local**
    - Hardhat node configurado con Chain ID 31337
    - Script de despliegue local creado
-   - MockMonad token para testing
+   - MockCCOP token para testing
 
 3. **Scripts de despliegue**
    - `contracts/scripts/deploy-local.js` - Despliega todos los contratos
@@ -53,7 +53,7 @@ npm run deploy:local
 ```
 
 El script desplegará:
-- MockMonad
+- MockCCOP
 - CreditNFT
 - RewardSystem
 - SiteVerification
@@ -68,7 +68,7 @@ Crea el archivo `frontend/.env.local`:
 ```env
 NEXT_PUBLIC_LOCAL_NFT_CONTRACT=0x... (dirección de CreditNFT)
 NEXT_PUBLIC_LOCAL_REWARD_CONTRACT=0x... (dirección de RewardSystem)
-NEXT_PUBLIC_LOCAL_Monad_CONTRACT=0x... (dirección de MockMonad)
+NEXT_PUBLIC_LOCAL_CCOP_CONTRACT=0x... (dirección de MockCCOP)
 NEXT_PUBLIC_BACKEND_API_URL=http://localhost:1880
 NODE_ENV=development
 ```
@@ -151,14 +151,14 @@ const tx = await nft.mintCreditNFT(
 await tx.wait();
 ```
 
-### Obtener Tokens Monad
+### Obtener Tokens cCOP
 
 ```javascript
-const MockMonad = await ethers.getContractFactory("MockMonad");
-const Monad = await MockMonad.attach("DIRECCION_DEL_CONTRATO");
+const MockCCOP = await ethers.getContractFactory("MockCCOP");
+const cCOP = await MockCCOP.attach("DIRECCION_DEL_CONTRATO");
 
 // Llamar al faucet para obtener tokens gratis
-await Monad.faucet();
+await cCOP.faucet();
 ```
 
 ## 📝 Archivos Modificados
@@ -175,7 +175,7 @@ await Monad.faucet();
 ### Contratos
 - `hardhat.config.js` - Configurado Chain ID 31337
 - `scripts/deploy-local.js` - Script de despliegue local
-- `contracts/MockMonad.sol` - Token mock para testing
+- `contracts/MockCCOP.sol` - Token mock para testing
 
 ## 🐛 Solución de Problemas
 

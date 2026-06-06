@@ -11,7 +11,7 @@ interface ICreditNFT {
     function getCreditData(uint256 tokenId) external view returns (
         uint256 paymentScore,
         uint256 consecutivePayments,
-        address linkedWallet,
+        address monadWallet,
         uint256 governancePower,
         uint256 stakingAmount,
         uint256 createdAt,
@@ -24,7 +24,7 @@ contract RewardSystem is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
 
     address public creditNFTContract;
-    IERC20 public Monad;
+    IERC20 public cCOP;
     uint256 public rewardRate;
     uint256 public baseReward;
     mapping(uint256 => uint256) public lastClaimed;
@@ -37,8 +37,8 @@ contract RewardSystem is Ownable, ReentrancyGuard {
     event RewardClaimed(uint256 indexed tokenId, address indexed recipient, uint256 amount, uint256 reputation);
     event PaymentRecorded(uint256 indexed tokenId, address indexed user, uint256 rewardAmount);
 
-    constructor(address initialOwner, address _Monad, address _creditNFTContract) Ownable(initialOwner) {
-        Monad = IERC20(_Monad);
+    constructor(address initialOwner, address _cCOP, address _creditNFTContract) Ownable(initialOwner) {
+        cCOP = IERC20(_cCOP);
         creditNFTContract = _creditNFTContract;
         rewardRate = 1e15;
         baseReward = 5e17;
@@ -52,21 +52,21 @@ contract RewardSystem is Ownable, ReentrancyGuard {
 
     function recordPayment(uint256 tokenId) external nonReentrant {
         require(authorizedRegistrars[msg.sender], "Not authorized");
-        require(creditNFTContract != address(0), "CreditNFT contract not set");
+        require(creditNFTContract != address(0), "Credit NFT contract not set");
 
         ICreditNFT creditNFT = ICreditNFT(creditNFTContract);
         address nftOwner = creditNFT.ownerOf(tokenId);
         require(nftOwner != address(0), "Invalid token");
 
-        (uint256 paymentScore, uint256 consecutivePayments, address linkedWallet,,,,) = creditNFT.getCreditData(tokenId);
-        address recipient = linkedWallet != address(0) ? linkedWallet : nftOwner;
+        (uint256 paymentScore, uint256 consecutivePayments, address monadWallet,,,,) = creditNFT.getCreditData(tokenId);
+        address recipient = monadWallet != address(0) ? monadWallet : nftOwner;
 
         uint256 reputation = creditNFT.getReputation(tokenId);
         uint256 rewardAmount = calculateReward(reputation, paymentScore, consecutivePayments);
 
-        require(Monad.balanceOf(address(this)) >= rewardAmount, "Insufficient contract balance");
+        require(cCOP.balanceOf(address(this)) >= rewardAmount, "Insufficient contract balance");
 
-        Monad.safeTransfer(recipient, rewardAmount);
+        cCOP.safeTransfer(recipient, rewardAmount);
         lastClaimed[tokenId] = block.timestamp;
         totalRewards[tokenId] += rewardAmount;
 
@@ -76,7 +76,7 @@ contract RewardSystem is Ownable, ReentrancyGuard {
         emit RewardClaimed(tokenId, recipient, rewardAmount, reputation);
     }
 
-    function calculateReward(uint256 reputation, uint256 paymentScore, uint256 consecutivePayments) internal view returns (uint256) {
+    function calculateReward(uint256 reputation, uint256 /* paymentScore */, uint256 consecutivePayments) internal view returns (uint256) {
         uint256 reward = baseReward;
         if (reputation > 0) {
             reward += (reputation * rewardRate);
@@ -105,7 +105,7 @@ contract RewardSystem is Ownable, ReentrancyGuard {
     }
 
     function depositFunds(uint256 amount) external onlyOwner {
-        Monad.safeTransferFrom(msg.sender, address(this), amount);
+        cCOP.safeTransferFrom(msg.sender, address(this), amount);
     }
 }
 

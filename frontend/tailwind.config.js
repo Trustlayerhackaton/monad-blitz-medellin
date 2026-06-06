@@ -20,6 +20,10 @@ module.exports = {
           800: "#075985",
           900: "#0c4a6e",
         },
+        monad: {
+          DEFAULT: "#00FF87",
+          dark: "#00D9FF",
+        },
       },
     },
   },

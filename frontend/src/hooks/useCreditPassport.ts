@@ -13,13 +13,13 @@ import {
   isChainConfigured,
   creditNFTAbi,
   rewardSystemAbi,
-  mockMonadAbi,
+  mockCCOPAbi,
 } from "@/lib/contracts";
 
 type CreditDataTuple = {
   paymentScore: bigint;
   consecutivePayments: bigint;
-  linkedWallet: `0x${string}`;
+  monadWallet: `0x${string}`;
   governancePower: bigint;
   stakingAmount: bigint;
   createdAt: bigint;
@@ -61,13 +61,13 @@ export function useCreditPassport() {
   });
   const creditData = creditDataRaw as CreditDataTuple | undefined;
 
-  // 3. Recompensas acumuladas (mMonad en wallet) y línea de crédito
-  const { data: MonadBalanceRaw, refetch: refetchBalance } = useReadContract({
-    address: contracts.mockMonad,
-    abi: mockMonadAbi,
+  // 3. Recompensas acumuladas (mcCOP en wallet) y línea de crédito
+  const { data: ccopBalanceRaw, refetch: refetchBalance } = useReadContract({
+    address: contracts.mockCCOP,
+    abi: mockCCOPAbi,
     functionName: "balanceOf",
     args: address ? [address] : undefined,
-    query: { enabled: baseEnabled && Boolean(contracts.mockMonad) },
+    query: { enabled: baseEnabled && Boolean(contracts.mockCCOP) },
   });
 
   const { data: creditInfoRaw, refetch: refetchCreditInfo } = useReadContract({
@@ -92,8 +92,8 @@ export function useCreditPassport() {
     ? Number(creditData.consecutivePayments)
     : 0;
 
-  const MonadBalance = (MonadBalanceRaw as bigint | undefined) ?? 0n;
-  const rewards = Math.round(Number(formatEther(MonadBalance)));
+  const ccopBalance = (ccopBalanceRaw as bigint | undefined) ?? 0n;
+  const rewards = Math.round(Number(formatEther(ccopBalance)));
 
   const creditInfo = creditInfoRaw as
     | readonly [bigint, bigint, bigint]
@@ -151,12 +151,12 @@ export function useCreditPassport() {
     return hash;
   };
 
-  // Reclama mMonad de prueba desde el faucet del token.
+  // Reclama mcCOP de prueba desde el faucet del token.
   const claimFaucet = async () => {
-    if (!contracts.mockMonad) return;
+    if (!contracts.mockCCOP) return;
     const hash = await writeContractAsync({
-      address: contracts.mockMonad,
-      abi: mockMonadAbi,
+      address: contracts.mockCCOP,
+      abi: mockCCOPAbi,
       functionName: "faucet",
     });
     return hash;
