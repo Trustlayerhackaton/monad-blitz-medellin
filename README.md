@@ -2,7 +2,7 @@
 
 > Decentralized, AI-powered credit scoring. Explainable, verifiable, owned by you.
 
-TrustLayer is a decentralized financial identity platform built on Monad. Users generate and verify their creditworthiness on-chain through AI-driven analysis of multi-wallet transaction history, receiving a portable credit passport (NFT) and reward tokens (mcCOP) that any merchant or lender can instantly verify.
+TrustLayer is a decentralized financial identity platform built on Monad. Users generate and verify their creditworthiness on-chain through AI-driven analysis of multi-wallet transaction history, receiving a portable credit passport (NFT) and reward tokens (MONAD) that any merchant or lender can instantly verify.
 
 ![TrustLayer](https://img.shields.io/badge/TrustLayer-Blockchain-purple)
 ![Solidity](https://img.shields.io/badge/Solidity-0.8.20-blue)
@@ -54,7 +54,7 @@ TrustLayer turns credit scoring from a black box into a **transparent, portable,
 2. **Dual Score System** — a *Credit Score* (on-chain behavior) and a *Trustworthy Score* (optional KYC/background check) give a complete view
 3. **Explainable AI** — every score comes with a factor breakdown so users know exactly what drives their result
 4. **NFT Credit Passport** — the score is minted on-chain as an ERC-721, portable and verifiable by any merchant or DeFi protocol
-5. **Reward System** — punctual payments earn mcCOP (ERC-20) tokens, gamifying good financial behavior
+5. **Reward System** — punctual payments earn MONAD (ERC-20) tokens, gamifying good financial behavior
 6. **Pay-per-Use on Monad** — each assessment costs a small MON fee, recorded immutably via `RiskScoreOracle`
 
 ![User Workflow](docs/img/user_workflow.png)
@@ -87,7 +87,7 @@ TrustLayer turns credit scoring from a black box into a **transparent, portable,
 
 - **6-tab dashboard**: Overview · Score Detail · Rewards · Achievements · Leaderboard · Profile
 - **NFT Credit Passport** display with level badge (Bronze → Silver → Gold → Platinum → Diamond)
-- **Rewards calculator** and tier table (mcCOP earned per level / streak)
+- **Rewards calculator** and tier table (MONAD earned per level / streak)
 - **Activity feed**, **progress chart**, **score trend chart**, **comparison card**
 - **Goals tracker** with AI-generated milestones
 - **Notifications panel** for score changes and achievement unlocks
@@ -179,13 +179,13 @@ The user's portable credit passport.
 - `getCreditData()` — returns full credit data for a token
 
 ### RewardSystem
-Distributes mcCOP rewards based on level and payment streak.
+Distributes MONAD rewards based on level and payment streak.
 - `calculateReward()` — computes reward for a given level/streak
-- `distributeReward()` — transfers mcCOP to user
+- `distributeReward()` — transfers MONAD to user
 - `getUserRewards()` — returns full reward history
 
 ### MockCCOP (ERC-20)
-The mcCOP reward token, compatible with any standard wallet.
+The MONAD reward token, compatible with any standard wallet.
 
 ### RiskScoreOracle *(new)*
 Stores AI-generated scores on-chain and gates score generation behind a MON fee.
@@ -430,7 +430,7 @@ monad-blitz-medellin/
 ## Roadmap
 
 ### Phase 1 — MVP (Current)
-- [x] Smart contracts: CreditNFT, RewardSystem, mcCOP
+- [x] Smart contracts: CreditNFT, RewardSystem, MONAD
 - [x] Smart contracts: RiskScoreOracle, WalletRegistry, ValidationRecord
 - [x] Frontend dashboard (6 tabs, demo mode)
 - [x] Multi-wallet form + Score payment modal
