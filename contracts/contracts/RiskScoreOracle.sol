@@ -5,6 +5,7 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
+import "./ValidationRecord.sol";
 
 /// @title RiskScoreOracle
 /// @author TrustLayer
@@ -64,6 +65,12 @@ contract RiskScoreOracle is AccessControl, ReentrancyGuard {
 
     /// @notice Se emite al retirar las tarifas acumuladas.
     event FeesWithdrawn(address indexed to, uint256 amount);
+
+    /// @notice Registro de auditoría de validaciones (opcional; se activa con setValidationRecord).
+    ValidationRecord public validationRecord;
+
+    /// @notice Se emite al vincular el registro de validaciones.
+    event ValidationRecordSet(address indexed validationRecord);
 
     /// @param admin Cuenta con DEFAULT_ADMIN_ROLE (gestiona roles, tarifa, retiros).
     /// @param oracleSigner Firmante autorizado inicial (backend de scoring).
@@ -134,6 +141,11 @@ contract RiskScoreOracle is AccessControl, ReentrancyGuard {
 
         emit ScoreSubmitted(subject, score, dataHash, msg.sender, scoreFee);
 
+        // Registra la validación en el libro de auditoría (si está configurado).
+        if (address(validationRecord) != address(0)) {
+            validationRecord.record(subject, score, dataHash);
+        }
+
         // Devuelve cualquier excedente por encima de la tarifa.
         uint256 refund = msg.value - scoreFee;
         if (refund > 0) {
@@ -152,6 +164,18 @@ contract RiskScoreOracle is AccessControl, ReentrancyGuard {
     /// @notice Indica si `subject` ya tiene un score publicado.
     function hasScore(address subject) external view returns (bool) {
         return _scores[subject].timestamp != 0;
+    }
+
+    /// @notice Vincula el contrato ValidationRecord y le otorga RECORDER_ROLE. Solo admin.
+    /// @param _validationRecord Dirección del contrato ValidationRecord desplegado.
+    function setValidationRecord(address _validationRecord) external onlyRole(DEFAULT_ADMIN_ROLE) {
+        require(_validationRecord != address(0), "RiskScoreOracle: zero address");
+        validationRecord = ValidationRecord(_validationRecord);
+        ValidationRecord(_validationRecord).grantRole(
+            ValidationRecord(_validationRecord).RECORDER_ROLE(),
+            address(this)
+        );
+        emit ValidationRecordSet(_validationRecord);
     }
 
     /// @notice Actualiza la tarifa por publicación de score. Solo admin.

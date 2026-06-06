@@ -13,7 +13,7 @@ lanzar el despliegue.**
 - **Frontend conectado a los contratos** (ya no es solo demo):
   - `frontend/src/lib/abis.ts` — ABIs de CreditNFT, RewardSystem, MockMonad.
   - `frontend/src/lib/contracts.ts` — direcciones por red (lee `NEXT_PUBLIC_MONAD_*`).
-  - `frontend/src/hooks/useCreditPassport.ts` — lecturas on-chain + acciones (mint, registrar pago, faucet).
+  - `frontend/src/hooks/useTrustLayer.ts` — lecturas on-chain + acciones (mint, registrar pago, faucet).
   - `frontend/src/app/page.tsx` — wagmi configurado para Monad; datos reales cuando hay NFT.
 - **Auto-emisión**: `CreditNFT.mintMyPassport()` permite a cualquier usuario crear su pasaporte (score base 500); subir el score sigue restringido a emisores autorizados.
 - **Tests de Hardhat**: `contracts/test/Trustlayer.test.js` — 13/13 pasando.

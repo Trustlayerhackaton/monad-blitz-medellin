@@ -1,4 +1,4 @@
-// Verificación e2e: lee exactamente lo mismo que el frontend (useCreditPassport)
+// Verificación e2e: lee exactamente lo mismo que el frontend (useTrustLayer)
 const hre = require("hardhat");
 const fs = require("fs");
 const path = require("path");

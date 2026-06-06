@@ -1,6 +1,179 @@
 // ABIs mínimos de los contratos de Trustlayer desplegados en Monad.
 // Solo se incluyen las funciones que usa el frontend.
 
+export const walletRegistryAbi = [
+  {
+    type: "function",
+    name: "consentHash",
+    stateMutability: "view",
+    inputs: [
+      { name: "owner", type: "address" },
+      { name: "wallet", type: "address" },
+    ],
+    outputs: [{ name: "", type: "bytes32" }],
+  },
+  {
+    type: "function",
+    name: "registerWallet",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "wallet", type: "address" },
+      { name: "signature", type: "bytes" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "getLinkedWallets",
+    stateMutability: "view",
+    inputs: [{ name: "owner", type: "address" }],
+    outputs: [{ name: "", type: "address[]" }],
+  },
+  {
+    type: "function",
+    name: "isLinked",
+    stateMutability: "view",
+    inputs: [
+      { name: "owner", type: "address" },
+      { name: "wallet", type: "address" },
+    ],
+    outputs: [{ name: "", type: "bool" }],
+  },
+  {
+    type: "event",
+    name: "WalletLinked",
+    inputs: [
+      { name: "owner", type: "address", indexed: true },
+      { name: "wallet", type: "address", indexed: true },
+    ],
+  },
+] as const;
+
+export const riskScoreOracleAbi = [
+  {
+    type: "function",
+    name: "scoreFee",
+    stateMutability: "view",
+    inputs: [],
+    outputs: [{ name: "", type: "uint256" }],
+  },
+  {
+    type: "function",
+    name: "submitScore",
+    stateMutability: "payable",
+    inputs: [
+      { name: "subject", type: "address" },
+      { name: "score", type: "uint256" },
+      { name: "dataHash", type: "bytes32" },
+      { name: "signature", type: "bytes" },
+    ],
+    outputs: [],
+  },
+  {
+    type: "function",
+    name: "getScore",
+    stateMutability: "view",
+    inputs: [{ name: "subject", type: "address" }],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        components: [
+          { name: "score", type: "uint256" },
+          { name: "timestamp", type: "uint256" },
+          { name: "dataHash", type: "bytes32" },
+        ],
+      },
+    ],
+  },
+  {
+    type: "function",
+    name: "hasScore",
+    stateMutability: "view",
+    inputs: [{ name: "subject", type: "address" }],
+    outputs: [{ name: "", type: "bool" }],
+  },
+  {
+    type: "function",
+    name: "scoreDigest",
+    stateMutability: "view",
+    inputs: [
+      { name: "subject", type: "address" },
+      { name: "score", type: "uint256" },
+      { name: "dataHash", type: "bytes32" },
+    ],
+    outputs: [{ name: "", type: "bytes32" }],
+  },
+  {
+    type: "event",
+    name: "ScoreSubmitted",
+    inputs: [
+      { name: "subject", type: "address", indexed: true },
+      { name: "score", type: "uint256", indexed: false },
+      { name: "dataHash", type: "bytes32", indexed: true },
+      { name: "payer", type: "address", indexed: true },
+      { name: "feePaid", type: "uint256", indexed: false },
+    ],
+  },
+] as const;
+
+export const validationRecordAbi = [
+  {
+    type: "function",
+    name: "getRecords",
+    stateMutability: "view",
+    inputs: [{ name: "subject", type: "address" }],
+    outputs: [
+      {
+        name: "",
+        type: "tuple[]",
+        components: [
+          { name: "oracle", type: "address" },
+          { name: "score", type: "uint256" },
+          { name: "dataHash", type: "bytes32" },
+          { name: "timestamp", type: "uint256" },
+        ],
+      },
+    ],
+  },
+  {
+    type: "function",
+    name: "recordCount",
+    stateMutability: "view",
+    inputs: [{ name: "subject", type: "address" }],
+    outputs: [{ name: "", type: "uint256" }],
+  },
+  {
+    type: "function",
+    name: "latestRecord",
+    stateMutability: "view",
+    inputs: [{ name: "subject", type: "address" }],
+    outputs: [
+      {
+        name: "",
+        type: "tuple",
+        components: [
+          { name: "oracle", type: "address" },
+          { name: "score", type: "uint256" },
+          { name: "dataHash", type: "bytes32" },
+          { name: "timestamp", type: "uint256" },
+        ],
+      },
+    ],
+  },
+  {
+    type: "event",
+    name: "ScoreValidated",
+    inputs: [
+      { name: "subject", type: "address", indexed: true },
+      { name: "score", type: "uint256", indexed: false },
+      { name: "dataHash", type: "bytes32", indexed: true },
+      { name: "oracle", type: "address", indexed: true },
+      { name: "timestamp", type: "uint256", indexed: false },
+    ],
+  },
+] as const;
+
 export const creditNFTAbi = [
   {
     type: "function",

@@ -28,8 +28,17 @@ import { StatsSummary } from "@/components/StatsSummary";
 import { DashboardTabs } from "@/components/DashboardTabs";
 import { WelcomeCard } from "@/components/WelcomeCard";
 import { RecommendedActions } from "@/components/RecommendedActions";
-import { useCreditPassport } from "@/hooks/useCreditPassport";
-import { Wallet, LogOut, CreditCard, Trophy, TrendingUp, Menu, X, User, Droplets, PlusCircle, RefreshCw } from "lucide-react";
+import { useTrustLayer } from "@/hooks/useTrustLayer";
+import {
+  useScoreFee,
+  useCreditScoreRequest,
+  useTrustScoreRequest,
+  type ScoreResult,
+} from "@/hooks/useScoreRequest";
+import WalletListForm from "@/components/WalletListForm";
+import ScorePaymentModal from "@/components/ScorePaymentModal";
+import TrustScoreCard from "@/components/TrustScoreCard";
+import { Wallet, LogOut, CreditCard, Trophy, TrendingUp, Menu, X, User, Droplets, PlusCircle, RefreshCw, BarChart2 } from "lucide-react";
 
 // Monad Mainnet (L1 EVM-compatible)
 const monadMainnet = {
@@ -88,7 +97,7 @@ function Dashboard() {
   const { connect } = useConnect();
   const { disconnect } = useDisconnect();
   const { switchChain, isPending: isSwitching } = useSwitchChain();
-  const passport = useCreditPassport();
+  const passport = useTrustLayer();
   const [isDemoMode, setIsDemoMode] = useState(true);
   const [currentScore, setCurrentScore] = useState(850);
   const [consecutivePayments, setConsecutivePayments] = useState(5);
@@ -97,6 +106,53 @@ function Dashboard() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [activeTab, setActiveTab] = useState("overview");
+
+  // Score request flow
+  const [showWalletForm, setShowWalletForm] = useState(false);
+  const [showPayModal, setShowPayModal] = useState(false);
+  const [pendingWallets, setPendingWallets] = useState<string[]>([]);
+  const [pendingNationalId, setPendingNationalId] = useState("");
+  const [pendingCountry, setPendingCountry] = useState("CO");
+  const [payStep, setPayStep] = useState<"idle" | "paying" | "scoring" | "done" | "error">("idle");
+  const [creditScoreResult, setCreditScoreResult] = useState<ScoreResult | null>(null);
+  const [trustScoreResult, setTrustScoreResult] = useState<ScoreResult | null>(null);
+  const [scoreError, setScoreError] = useState<string | null>(null);
+
+  const { data: scoreFee } = useScoreFee(passport.chainId);
+  const { requestCreditScore, loading: creditLoading } = useCreditScoreRequest();
+  const { requestTrustScore } = useTrustScoreRequest();
+
+  const handleWalletFormSubmit = (wallets: string[], nationalId: string, countryCode: string) => {
+    setPendingWallets(wallets);
+    setPendingNationalId(nationalId);
+    setPendingCountry(countryCode);
+    setShowWalletForm(false);
+    setShowPayModal(true);
+    setPayStep("idle");
+  };
+
+  const handleScoreGenerate = async () => {
+    setPayStep("paying");
+    setScoreError(null);
+    try {
+      setPayStep("scoring");
+      const credit = await requestCreditScore(
+        pendingWallets,
+        address as `0x${string}`,
+        passport.chainId,
+        scoreFee ?? 0n
+      );
+      setCreditScoreResult(credit);
+      if (pendingNationalId) {
+        const trust = await requestTrustScore(pendingNationalId, pendingCountry);
+        setTrustScoreResult(trust);
+      }
+      setPayStep("done");
+    } catch (err: unknown) {
+      setPayStep("error");
+      setScoreError(err instanceof Error ? err.message : "Score generation failed");
+    }
+  };
 
   const getLevel = (score: number) => {
     if (score >= 950) return "Diamante";
@@ -471,6 +527,14 @@ function Dashboard() {
                   <RefreshCw className="w-4 h-4" />
                   <span>Refrescar</span>
                 </button>
+                <button
+                  onClick={() => setShowWalletForm(true)}
+                  className="flex items-center space-x-2 px-3 py-2 rounded-lg text-sm font-semibold transition-all duration-300"
+                  style={{ background: 'linear-gradient(135deg,rgba(0,255,135,0.15),rgba(0,217,255,0.15))', border: '1px solid rgba(0,217,255,0.4)', color: '#00D9FF' }}
+                >
+                  <BarChart2 className="w-4 h-4" />
+                  <span>Solicitar Análisis</span>
+                </button>
               </div>
             </div>
             {passport.isPending && (
@@ -489,6 +553,11 @@ function Dashboard() {
             level={getLevel(currentScore)}
             consecutivePayments={consecutivePayments}
             isDemoMode={isDemoMode}
+          />
+          <TrustScoreCard
+            creditScore={creditScoreResult}
+            trustScore={trustScoreResult}
+            loading={creditLoading}
           />
         </div>
 
@@ -815,6 +884,41 @@ function Dashboard() {
         level={getLevel(currentScore)}
               isDemoMode={isDemoMode}
             />
+
+      {/* Score flow modals */}
+      {showWalletForm && (
+        <div
+          style={{
+            position: "fixed",
+            inset: 0,
+            background: "rgba(0,0,0,0.7)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            zIndex: 999,
+            padding: 16,
+          }}
+        >
+          <WalletListForm
+            onSubmit={handleWalletFormSubmit}
+            onCancel={() => setShowWalletForm(false)}
+          />
+        </div>
+      )}
+
+      {showPayModal && (
+        <ScorePaymentModal
+          scoreFee={scoreFee ?? 0n}
+          wallets={pendingWallets}
+          hasNationalId={Boolean(pendingNationalId)}
+          onConfirm={handleScoreGenerate}
+          onClose={() => { setShowPayModal(false); setPayStep("idle"); }}
+          step={payStep}
+          creditScore={creditScoreResult}
+          trustScore={trustScoreResult}
+          errorMsg={scoreError}
+        />
+      )}
     </div>
   );
 }

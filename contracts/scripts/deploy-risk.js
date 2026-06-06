@@ -56,16 +56,31 @@ async function main() {
   const riskOracleAddress = await riskOracle.getAddress();
   console.log("✅ RiskScoreOracle:", riskOracleAddress, "\n");
 
-  // 4. Conectar el CreditNFT con el oráculo
-  console.log("3️⃣ Conectando CreditNFT.setRiskOracle(...)...");
+  // 4. ValidationRecord
+  console.log("3️⃣ Desplegando ValidationRecord...");
+  const ValidationRecord = await hre.ethers.getContractFactory("ValidationRecord");
+  const validationRecord = await ValidationRecord.deploy(deployer.address);
+  await validationRecord.waitForDeployment();
+  const validationRecordAddress = await validationRecord.getAddress();
+  console.log("✅ ValidationRecord:", validationRecordAddress, "\n");
+
+  // 5. Vincular ValidationRecord → RiskScoreOracle (otorga RECORDER_ROLE automáticamente)
+  console.log("4️⃣ Vinculando RiskScoreOracle.setValidationRecord(...)...");
+  const txVR = await riskOracle.setValidationRecord(validationRecordAddress);
+  await txVR.wait();
+  console.log("✅ ValidationRecord vinculado al RiskScoreOracle\n");
+
+  // 6. Conectar el CreditNFT con el oráculo
+  console.log("5️⃣ Conectando CreditNFT.setRiskOracle(...)...");
   const creditNFT = await hre.ethers.getContractAt("CreditNFT", creditNFTAddress);
   const tx = await creditNFT.setRiskOracle(riskOracleAddress);
   await tx.wait();
   console.log("✅ CreditNFT vinculado al RiskScoreOracle\n");
 
-  // 5. Persistir direcciones
+  // 7. Persistir direcciones
   deployment.contracts.walletRegistry = walletRegistryAddress;
   deployment.contracts.riskOracle = riskOracleAddress;
+  deployment.contracts.validationRecord = validationRecordAddress;
   deployment.riskModule = {
     scoreFeeWei: scoreFee.toString(),
     oracleSigner,
@@ -77,11 +92,13 @@ async function main() {
   console.log("\n" + "=".repeat(60));
   console.log("🎉 Módulo de riesgo desplegado");
   console.log("=".repeat(60));
-  console.log("WalletRegistry:  ", walletRegistryAddress);
-  console.log("RiskScoreOracle: ", riskOracleAddress);
+  console.log("WalletRegistry:    ", walletRegistryAddress);
+  console.log("RiskScoreOracle:   ", riskOracleAddress);
+  console.log("ValidationRecord:  ", validationRecordAddress);
   console.log("\n💡 Añade a frontend/.env.local:");
   console.log(`NEXT_PUBLIC_WALLET_REGISTRY_ADDRESS=${walletRegistryAddress}`);
   console.log(`NEXT_PUBLIC_RISK_ORACLE_ADDRESS=${riskOracleAddress}`);
+  console.log(`NEXT_PUBLIC_VALIDATION_RECORD_ADDRESS=${validationRecordAddress}`);
 
   // En local, anexar al .env.local automáticamente (sin pisar lo existente).
   if (net === "localhost" || net === "hardhat") {
@@ -89,6 +106,7 @@ async function main() {
     let env = fs.existsSync(envPath) ? fs.readFileSync(envPath, "utf8") : "";
     env = upsertEnv(env, "NEXT_PUBLIC_WALLET_REGISTRY_ADDRESS", walletRegistryAddress);
     env = upsertEnv(env, "NEXT_PUBLIC_RISK_ORACLE_ADDRESS", riskOracleAddress);
+    env = upsertEnv(env, "NEXT_PUBLIC_VALIDATION_RECORD_ADDRESS", validationRecordAddress);
     fs.writeFileSync(envPath, env);
     console.log("\n✅ frontend/.env.local actualizado");
   }

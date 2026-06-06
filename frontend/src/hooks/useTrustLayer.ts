@@ -31,7 +31,7 @@ type CreditDataTuple = {
  * desplegados en Monad (o en la red activa que esté configurada) y expone
  * las acciones de escritura (mint, registrar pago, faucet).
  */
-export function useCreditPassport() {
+export function useTrustLayer() {
   const { address, isConnected } = useAccount();
   const chainId = useChainId();
   const contracts = getContracts(chainId);

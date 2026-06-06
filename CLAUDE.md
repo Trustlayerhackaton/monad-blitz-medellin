@@ -16,7 +16,7 @@ portátil y verificable en cualquier comercio.
 
 ## Estructura
 - `frontend/` — app Next.js. La lógica del dashboard vive en `src/app/page.tsx`
-  (config de wagmi inline + 6 tabs). Hook on-chain en `src/hooks/useCreditPassport.ts`.
+  (config de wagmi inline + 6 tabs). Hook on-chain en `src/hooks/useTrustLayer.ts`.
   Direcciones por chainId en `src/lib/contracts.ts` (leídas de `NEXT_PUBLIC_*`).
 - `contracts/` — proyecto Hardhat. Fuentes activas en `contracts/contracts/`
   (`CreditNFT.sol`, `RewardSystem.sol`, `MockCCOP.sol`). Scripts de deploy en `scripts/`.

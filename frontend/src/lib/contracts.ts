@@ -1,9 +1,19 @@
-import { creditNFTAbi, rewardSystemAbi, mockCCOPAbi } from "./abis";
+import {
+  creditNFTAbi,
+  mockCCOPAbi,
+  rewardSystemAbi,
+  riskScoreOracleAbi,
+  validationRecordAbi,
+  walletRegistryAbi,
+} from "./abis";
 
 export type ContractAddresses = {
   creditNFT?: `0x${string}`;
   rewardSystem?: `0x${string}`;
   mockCCOP?: `0x${string}`;
+  walletRegistry?: `0x${string}`;
+  riskScoreOracle?: `0x${string}`;
+  validationRecord?: `0x${string}`;
 };
 
 const env = (v?: string): `0x${string}` | undefined =>
@@ -15,6 +25,9 @@ const monadAddresses: ContractAddresses = {
   creditNFT: env(process.env.NEXT_PUBLIC_MONAD_NFT_CONTRACT),
   rewardSystem: env(process.env.NEXT_PUBLIC_MONAD_REWARD_CONTRACT),
   mockCCOP: env(process.env.NEXT_PUBLIC_MONAD_CCOP_CONTRACT),
+  walletRegistry: env(process.env.NEXT_PUBLIC_WALLET_REGISTRY_ADDRESS),
+  riskScoreOracle: env(process.env.NEXT_PUBLIC_RISK_ORACLE_ADDRESS),
+  validationRecord: env(process.env.NEXT_PUBLIC_VALIDATION_RECORD_ADDRESS),
 };
 
 export const CONTRACTS: Record<number, ContractAddresses> = {
@@ -29,6 +42,9 @@ export const CONTRACTS: Record<number, ContractAddresses> = {
     mockCCOP:
       env(process.env.NEXT_PUBLIC_LOCAL_CCOP_CONTRACT) ??
       "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    walletRegistry: env(process.env.NEXT_PUBLIC_WALLET_REGISTRY_ADDRESS),
+    riskScoreOracle: env(process.env.NEXT_PUBLIC_RISK_ORACLE_ADDRESS),
+    validationRecord: env(process.env.NEXT_PUBLIC_VALIDATION_RECORD_ADDRESS),
   },
   10143: monadAddresses, // Monad Testnet
   143: monadAddresses, // Monad Mainnet
@@ -44,4 +60,11 @@ export function isChainConfigured(chainId?: number): boolean {
   return Boolean(c.creditNFT && c.rewardSystem && c.mockCCOP);
 }
 
-export { creditNFTAbi, rewardSystemAbi, mockCCOPAbi };
+export {
+  creditNFTAbi,
+  mockCCOPAbi,
+  rewardSystemAbi,
+  riskScoreOracleAbi,
+  validationRecordAbi,
+  walletRegistryAbi,
+};

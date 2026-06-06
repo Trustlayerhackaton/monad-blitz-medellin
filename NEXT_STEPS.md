@@ -12,7 +12,7 @@ Hoja de ruta de desarrollo activo, priorizada por impacto sobre el producto.
 
 ## 2. Salir del modo demo
 - Hoy varios componentes reciben `isDemoMode` y valores hardcodeados (`averageScore=820`,
-  `targetScore=1000`, leaderboard ficticio). Cablear a lecturas reales de `useCreditPassport`
+  `targetScore=1000`, leaderboard ficticio). Cablear a lecturas reales de `useTrustLayer`
   o a un servicio de indexación.
 
 ## 3. Refactor de arquitectura del frontend
@@ -28,7 +28,7 @@ Hoja de ruta de desarrollo activo, priorizada por impacto sobre el producto.
 ## 5. Calidad y CI
 - GitHub Actions: `build` + `tsc --noEmit` + `next lint` en cada PR.
 - Tests E2E (Playwright): conexión de wallet, switch de red, mint. Unit tests del hook
-  `useCreditPassport`. Los contratos ya tienen `test/Trustlayer.test.js`.
+  `useTrustLayer`. Los contratos ya tienen `test/Trustlayer.test.js`.
 
 ## 6. Documentación
 - ~40 `.md` en la raíz, varios duplicados (guías de despliegue casi idénticas).
