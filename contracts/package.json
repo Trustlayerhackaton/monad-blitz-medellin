@@ -1,7 +1,7 @@
 {
-  "name": "credipass-contracts",
+  "name": "Trustlayer-contracts",
   "version": "1.0.0",
-  "description": "Smart contracts for CrediPass - Tu pasaporte financiero digital",
+  "description": "Smart contracts for Trustlayer - Tu pasaporte financiero digital",
   "main": "index.js",
   "scripts": {
     "compile": "hardhat compile",

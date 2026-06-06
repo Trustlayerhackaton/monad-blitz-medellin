@@ -426,7 +426,7 @@ function Dashboard() {
                   </>
                 ) : (
                   <>
-                    <strong style={{ color: '#00D9FF' }}>Sin pasaporte:</strong> aún no tienes un NFT CrediPass en esta wallet.
+                    <strong style={{ color: '#00D9FF' }}>Sin pasaporte:</strong> aún no tienes un NFT Trustlayer en esta wallet.
                     Crea el tuyo (score base 500) para empezar.
                   </>
                 )}

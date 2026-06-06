@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-Contexto del proyecto para Claude Code. CrediPass es un producto en desarrollo activo.
+Contexto del proyecto para Claude Code. Trustlayer es un producto en desarrollo activo.
 
 ## Qué es
 dApp de identidad financiera descentralizada: los usuarios generan y verifican
@@ -34,7 +34,7 @@ portátil y verificable en cualquier comercio.
   compilación on-demand de Next). Ejecutar: `cd frontend && npm run test:e2e`.
 - `demo-mode.spec.ts` cubre el modo demo (carga, banner, métricas, navegación de tabs).
   Usar `.first()` / scope por rol: muchos textos se repiten en varias tarjetas.
-- Contratos: `contracts/test/CrediPass.test.js` (`npm test` en `contracts/`).
+- Contratos: `contracts/test/Trustlayer.test.js` (`npm test` en `contracts/`).
 
 ## Conexión a Monad
 - La UI ofrece botones de cambio/alta de red (Monad Testnet/Mainnet) vía `useSwitchChain`.

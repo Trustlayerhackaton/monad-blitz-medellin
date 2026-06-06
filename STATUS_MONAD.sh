@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# 📊 ESTADO DE DESPLIEGUE - CrediPass en Monad Testnet
+# 📊 ESTADO DE DESPLIEGUE - Trustlayer en Monad Testnet
 # Generated: 2026-06-06
 
 echo "╔════════════════════════════════════════════════════════════════╗"

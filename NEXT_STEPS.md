@@ -1,4 +1,4 @@
-# CrediPass — Próximos pasos
+# Trustlayer — Próximos pasos
 
 Hoja de ruta de desarrollo activo, priorizada por impacto sobre el producto.
 
@@ -28,7 +28,7 @@ Hoja de ruta de desarrollo activo, priorizada por impacto sobre el producto.
 ## 5. Calidad y CI
 - GitHub Actions: `build` + `tsc --noEmit` + `next lint` en cada PR.
 - Tests E2E (Playwright): conexión de wallet, switch de red, mint. Unit tests del hook
-  `useCreditPassport`. Los contratos ya tienen `test/CrediPass.test.js`.
+  `useCreditPassport`. Los contratos ya tienen `test/Trustlayer.test.js`.
 
 ## 6. Documentación
 - ~40 `.md` en la raíz, varios duplicados (guías de despliegue casi idénticas).

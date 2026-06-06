@@ -1,10 +1,10 @@
-# 🎫 CrediPass - Tu Pasaporte Financiero Digital
+# 🎫 Trustlayer - Tu Pasaporte Financiero Digital
 
 > **Portátil y verificable en cualquier comercio**
 
-CrediPass es una plataforma descentralizada basada en blockchain que permite a los usuarios crear y gestionar un pasaporte financiero digital portátil. El sistema gamifica el comportamiento de pago puntual, recompensando a los usuarios con tokens cCOP y NFTs que representan su historial crediticio.
+Trustlayer es una plataforma descentralizada basada en blockchain que permite a los usuarios crear y gestionar un pasaporte financiero digital portátil. El sistema gamifica el comportamiento de pago puntual, recompensando a los usuarios con tokens cCOP y NFTs que representan su historial crediticio.
 
-![CrediPass](https://img.shields.io/badge/CrediPass-Blockchain-blue)
+![Trustlayer](https://img.shields.io/badge/Trustlayer-Blockchain-blue)
 ![Solidity](https://img.shields.io/badge/Solidity-0.8.20-blue)
 ![Next.js](https://img.shields.io/badge/Next.js-14-black)
 ![License](https://img.shields.io/badge/License-MIT-green)
@@ -52,7 +52,7 @@ Este problema afecta especialmente a:
 
 ## ✨ Solución
 
-CrediPass utiliza **blockchain y NFTs** para crear un sistema de reputación crediticia:
+Trustlayer utiliza **blockchain y NFTs** para crear un sistema de reputación crediticia:
 
 1. **NFTs como Pasaportes Financieros**: Cada usuario recibe un NFT que contiene su historial de pagos, score y logros
 2. **Gamificación**: Sistema de recompensas con tokens cCOP por pagos puntuales
@@ -162,8 +162,8 @@ CrediPass utiliza **blockchain y NFTs** para crear un sistema de reputación cre
 
 1. **Clonar el repositorio**
    ```bash
-   git clone https://github.com/USERNAME/credipass.git
-   cd credipass
+   git clone https://github.com/USERNAME/Trustlayer.git
+   cd Trustlayer
    ```
 
 2. **Instalar dependencias de contratos**
@@ -282,7 +282,7 @@ chmod +x scripts/start-all.sh
 ## 📁 Estructura del Proyecto
 
 ```
-credipass/
+Trustlayer/
 ├── contracts/              # Smart Contracts
 │   ├── contracts/          # Código Solidity
 │   │   ├── CreditNFT.sol   # NFT de reputación crediticia
@@ -411,7 +411,7 @@ Desarrollado para el Hackathon de Blockchain - 2025
 
 ## 📞 Contacto y Soporte
 
-- **Issues**: [GitHub Issues](https://github.com/USERNAME/credipass/issues)
+- **Issues**: [GitHub Issues](https://github.com/USERNAME/Trustlayer/issues)
 - **Documentación**: Ver carpeta `docs/`
 - **Guía Rápida**: [INICIO_RAPIDO.md](./INICIO_RAPIDO.md)
 

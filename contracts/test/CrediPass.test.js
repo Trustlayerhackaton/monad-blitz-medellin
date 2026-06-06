@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const { loadFixture } = require("@nomicfoundation/hardhat-toolbox/network-helpers");
 
-describe("CrediPass", function () {
+describe("Trustlayer", function () {
   // Despliega MockCCOP + CreditNFT + RewardSystem y devuelve los signers.
   async function deployFixture() {
     const [owner, user, registrar, other] = await ethers.getSigners();

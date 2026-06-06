@@ -4,15 +4,15 @@ import { test, expect } from "@playwright/test";
  * Smoke E2E del modo demo (sin wallet). Verifica que la app carga, muestra
  * el estado demo, las tarjetas de métricas y permite navegar las pestañas.
  */
-test.describe("CrediPass — modo demo", () => {
+test.describe("Trustlayer — modo demo", () => {
   test.beforeEach(async ({ page }) => {
     await page.goto("/");
   });
 
   test("carga la app con cabecera y banner de demo", async ({ page }) => {
-    await expect(page).toHaveTitle(/CrediPass/i);
+    await expect(page).toHaveTitle(/Trustlayer/i);
     await expect(
-      page.getByRole("heading", { name: /CrediPass/i })
+      page.getByRole("heading", { name: /Trustlayer/i })
     ).toBeVisible();
     await expect(page.getByText(/Modo Demo/i).first()).toBeVisible();
     await expect(

@@ -1,4 +1,4 @@
-# 🚀 Configuración CrediPass en Monad Testnet
+# 🚀 Configuración Trustlayer en Monad Testnet
 
 ## ✅ Estado: CONTRATOS DESPLEGADOS EN MONAD TESTNET (Chain ID 10143)
 

@@ -20,7 +20,7 @@ async function main() {
   // --- 1. WalletRegistry: walletB firma su consentimiento; owner la registra ---
   const rawConsent = ethers.solidityPackedKeccak256(
     ["string", "address", "address", "uint256", "address"],
-    ["CrediPass:LinkWallet:", owner.address, walletB.address, chainId, c.walletRegistry]
+    ["Trustlayer:LinkWallet:", owner.address, walletB.address, chainId, c.walletRegistry]
   );
   const consentSig = await walletB.signMessage(ethers.getBytes(rawConsent));
   await (await registry.connect(owner).registerWallet(walletB.address, consentSig)).wait();

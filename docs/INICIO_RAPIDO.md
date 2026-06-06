@@ -1,4 +1,4 @@
-# 🚀 Inicio Rápido - CrediPass
+# 🚀 Inicio Rápido - Trustlayer
 
 ## ⚡ Opción Rápida: Monad Testnet (Recomendado)
 

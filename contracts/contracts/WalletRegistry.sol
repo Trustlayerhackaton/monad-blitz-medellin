@@ -5,9 +5,9 @@ import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import "@openzeppelin/contracts/utils/cryptography/MessageHashUtils.sol";
 
 /// @title WalletRegistry
-/// @author CrediPass
+/// @author Trustlayer
 /// @notice Permite a una identidad (`identityOwner`) vincular múltiples wallets
-///         a su perfil CrediPass. Cada wallet adicional debe firmar un mensaje
+///         a su perfil Trustlayer. Cada wallet adicional debe firmar un mensaje
 ///         de consentimiento, de forma que únicamente el dueño real de esa
 ///         wallet puede autorizar la vinculación.
 /// @dev El conjunto de wallets vinculadas lo consume después el motor de scoring
@@ -48,7 +48,7 @@ contract WalletRegistry {
     function consentHash(address owner, address wallet) public view returns (bytes32) {
         bytes32 raw = keccak256(
             abi.encodePacked(
-                "CrediPass:LinkWallet:",
+                "Trustlayer:LinkWallet:",
                 owner,
                 wallet,
                 block.chainid,

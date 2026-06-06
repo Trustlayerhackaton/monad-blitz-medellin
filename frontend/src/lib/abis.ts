@@ -1,4 +1,4 @@
-// ABIs mínimos de los contratos de CrediPass desplegados en Monad.
+// ABIs mínimos de los contratos de Trustlayer desplegados en Monad.
 // Solo se incluyen las funciones que usa el frontend.
 
 export const creditNFTAbi = [

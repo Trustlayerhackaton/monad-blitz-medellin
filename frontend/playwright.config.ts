@@ -1,7 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 /**
- * Configuración E2E de CrediPass. Levanta el dev server de Next.js y
+ * Configuración E2E de Trustlayer. Levanta el dev server de Next.js y
  * ejecuta las pruebas contra http://localhost:3000.
  */
 export default defineConfig({
