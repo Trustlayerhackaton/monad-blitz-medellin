@@ -5,11 +5,16 @@ from fastapi import FastAPI
 
 load_dotenv()
 
+from database import Base, engine  # noqa: E402 — must run after load_dotenv
+from routers import users_router
+
+Base.metadata.create_all(bind=engine)
+
 app = FastAPI(title="Trustlayer API")
 
-DATABASE_URL = os.getenv("DATABASE_URL")
+app.include_router(users_router)
 
 
 @app.get("/health")
 def health():
-    return {"status": "ok", "db_configured": DATABASE_URL is not None}
+    return {"status": "ok", "db_configured": os.getenv("DATABASE_URL") is not None}
