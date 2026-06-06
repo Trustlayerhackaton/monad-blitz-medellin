@@ -2,8 +2,8 @@
   "_format": "hh-sol-cache-2",
   "files": {
     "/home/lucas-nunes/workspace/trustlayer/monad-blitz-medellin/contracts/contracts/CreditNFT.sol": {
-      "lastModificationDate": 1780766166654,
-      "contentHash": "7ddeaa727ac3359fc16b4508c97b142e",
+      "lastModificationDate": 1780779001216,
+      "contentHash": "8bf6bdb750df47b5e9e3ea56a7bfc99c",
       "sourceName": "contracts/CreditNFT.sol",
       "solcConfig": {
         "version": "0.8.20",
@@ -994,8 +994,8 @@
       ]
     },
     "/home/lucas-nunes/workspace/trustlayer/monad-blitz-medellin/contracts/contracts/RewardSystem.sol": {
-      "lastModificationDate": 1780766166655,
-      "contentHash": "7951cdacd1e7a63270e5ff2b29c248ea",
+      "lastModificationDate": 1780779044342,
+      "contentHash": "63e10f4c1ca3f8c7e2cfc9f3ac2a548f",
       "sourceName": "contracts/RewardSystem.sol",
       "solcConfig": {
         "version": "0.8.20",
@@ -1031,7 +1031,7 @@
         "^0.8.20"
       ],
       "artifacts": [
-        "IAstarNFT",
+        "ICreditNFT",
         "RewardSystem"
       ]
     },
@@ -1072,8 +1072,8 @@
       ]
     },
     "/home/lucas-nunes/workspace/trustlayer/monad-blitz-medellin/contracts/contracts/MockCCOP.sol": {
-      "lastModificationDate": 1780766166654,
-      "contentHash": "8d8fd96661910087fd095fed7d23cf0c",
+      "lastModificationDate": 1780779631982,
+      "contentHash": "f0eac7dac38e034b637910b8eef6ac4b",
       "sourceName": "contracts/MockCCOP.sol",
       "solcConfig": {
         "version": "0.8.20",

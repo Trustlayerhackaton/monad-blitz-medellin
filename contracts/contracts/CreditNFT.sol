@@ -14,7 +14,7 @@ contract CreditNFT is ERC721URIStorage, Ownable {
     struct CreditData {
         uint256 paymentScore;
         uint256 consecutivePayments;
-        address celoWallet;
+        address linkedWallet;
         uint256 governancePower;
         uint256 stakingAmount;
         uint256 createdAt;
@@ -28,7 +28,7 @@ contract CreditNFT is ERC721URIStorage, Ownable {
 
     event CreditNFTMinted(uint256 indexed tokenId, address indexed owner, uint256 paymentScore, uint256 consecutivePayments);
     event PaymentRecorded(uint256 indexed tokenId, uint256 newScore, uint256 consecutivePayments);
-    event CeloWalletLinked(uint256 indexed tokenId, address indexed celoWallet);
+    event WalletLinked(uint256 indexed tokenId, address indexed linkedWallet);
 
     constructor(address initialOwner) ERC721("Credit Reputation NFT", "CREDIT") Ownable(initialOwner) {
         authorizedMinters[msg.sender] = true;
@@ -67,7 +67,7 @@ contract CreditNFT is ERC721URIStorage, Ownable {
         creditData[newTokenId] = CreditData({
             paymentScore: paymentScore,
             consecutivePayments: consecutivePayments,
-            celoWallet: address(0),
+            linkedWallet: address(0),
             governancePower: governancePower,
             stakingAmount: 0,
             createdAt: block.timestamp,
@@ -96,11 +96,11 @@ contract CreditNFT is ERC721URIStorage, Ownable {
         emit PaymentRecorded(tokenId, newScore, consecutivePayments);
     }
 
-    function linkCeloWallet(uint256 tokenId, address celoWallet) external {
+    function linkWallet(uint256 tokenId, address linkedWallet) external {
         require(_ownerOf(tokenId) == msg.sender, "Not the owner");
-        require(celoWallet != address(0), "Invalid Celo wallet");
-        creditData[tokenId].celoWallet = celoWallet;
-        emit CeloWalletLinked(tokenId, celoWallet);
+        require(linkedWallet != address(0), "Invalid wallet address");
+        creditData[tokenId].linkedWallet = linkedWallet;
+        emit WalletLinked(tokenId, linkedWallet);
     }
 
     function getReputation(uint256 tokenId) external view returns (uint256) {

@@ -28,7 +28,7 @@ export const creditNFTAbi = [
         components: [
           { name: "paymentScore", type: "uint256" },
           { name: "consecutivePayments", type: "uint256" },
-          { name: "celoWallet", type: "address" },
+          { name: "linkedWallet", type: "address" },
           { name: "governancePower", type: "uint256" },
           { name: "stakingAmount", type: "uint256" },
           { name: "createdAt", type: "uint256" },
@@ -113,7 +113,7 @@ export const rewardSystemAbi = [
     type: "function",
     name: "recordPayment",
     stateMutability: "nonpayable",
-    inputs: [{ name: "astarTokenId", type: "uint256" }],
+    inputs: [{ name: "tokenId", type: "uint256" }],
     outputs: [],
   },
 ] as const;

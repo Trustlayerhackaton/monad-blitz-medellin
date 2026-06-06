@@ -19,7 +19,7 @@ export function SharePanel({
   const [isOpen, setIsOpen] = useState(false);
   const [copied, setCopied] = useState(false);
 
-  const shareText = `🎉 ¡He alcanzado un score de ${score} con ${consecutivePayments} pagos consecutivos en Trustlayerc! 🚀\n\n#Trustlayerc #Blockchain #DeFi #Fintech`;
+  const shareText = `🎉 ¡He alcanzado un score de ${score} con ${consecutivePayments} pagos consecutivos en Trustlayer! 🚀\n\n#Trustlayer #Blockchain #DeFi #Fintech`;
 
   const shareUrl = typeof window !== "undefined" ? window.location.href : "";
 
@@ -42,7 +42,7 @@ export function SharePanel({
         break;
       case "instagram":
         // Instagram no permite compartir directamente, pero podemos copiar el texto
-        const instagramText = `🎉 ¡He alcanzado un score de ${score} con ${consecutivePayments} pagos consecutivos en Trustlayerc! 🚀\n\n${shareUrl}\n\n#Trustlayerc #Blockchain #DeFi #Fintech`;
+        const instagramText = `🎉 ¡He alcanzado un score de ${score} con ${consecutivePayments} pagos consecutivos en Trustlayer! 🚀\n\n${shareUrl}\n\n#Trustlayer #Blockchain #DeFi #Fintech`;
         navigator.clipboard.writeText(instagramText);
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
@@ -75,7 +75,7 @@ export function SharePanel({
       ctx.fillStyle = "#FFFFFF";
       ctx.font = "bold 64px Arial";
       ctx.textAlign = "center";
-      ctx.fillText("Trustlayerc", 600, 150);
+      ctx.fillText("Trustlayer", 600, 150);
       ctx.font = "48px Arial";
       ctx.fillText(`Score: ${score}`, 600, 250);
       ctx.fillText(`${consecutivePayments} Pagos Consecutivos`, 600, 320);
@@ -88,7 +88,7 @@ export function SharePanel({
           const url = URL.createObjectURL(blob);
           const a = document.createElement("a");
           a.href = url;
-          a.download = `Trustlayerc-${score}.png`;
+          a.download = `Trustlayer-${score}.png`;
           a.click();
           URL.revokeObjectURL(url);
         }

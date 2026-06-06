@@ -1,12 +1,12 @@
-# Script para subir Trustlayerc a GitHub Personal
+# Script para subir Trustlayer a GitHub Personal
 # Ejecuta este script después de crear el repositorio en GitHub.com
 
-Write-Host "🚀 Subiendo Trustlayerc a GitHub Personal" -ForegroundColor Cyan
+Write-Host "🚀 Subiendo Trustlayer a GitHub Personal" -ForegroundColor Cyan
 Write-Host ""
 
 # Solicitar información del usuario
 $githubUser = Read-Host "Ingresa tu nombre de usuario de GitHub"
-$repoName = Read-Host "Ingresa el nombre del repositorio (ej: Trustlayerc)"
+$repoName = Read-Host "Ingresa el nombre del repositorio (ej: Trustlayer)"
 
 # Construir URL
 $repoUrl = "https://github.com/$githubUser/$repoName.git"

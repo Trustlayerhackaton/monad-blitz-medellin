@@ -5,12 +5,8 @@
   "framework": "nextjs",
   "regions": ["iad1"],
   "env": {
-    "NEXT_PUBLIC_ASTAR_NFT_CONTRACT": "@astar_nft_contract",
-    "NEXT_PUBLIC_CELO_REWARD_CONTRACT": "@celo_reward_contract",
-    "NEXT_PUBLIC_LOCAL_Monad_CONTRACT": "@local_Monad_contract",
-    "NEXT_PUBLIC_ASTAR_CHAIN_ID": "592",
-    "NEXT_PUBLIC_CELO_CHAIN_ID": "42220"
+    "NEXT_PUBLIC_MONAD_NFT_CONTRACT": "@monad_nft_contract",
+    "NEXT_PUBLIC_MONAD_REWARD_CONTRACT": "@monad_reward_contract",
+    "NEXT_PUBLIC_MONAD_CHAIN_ID": "10143"
   }
 }
-
-

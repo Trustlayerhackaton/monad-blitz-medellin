@@ -19,7 +19,7 @@ import {
 type CreditDataTuple = {
   paymentScore: bigint;
   consecutivePayments: bigint;
-  celoWallet: `0x${string}`;
+  linkedWallet: `0x${string}`;
   governancePower: bigint;
   stakingAmount: bigint;
   createdAt: bigint;

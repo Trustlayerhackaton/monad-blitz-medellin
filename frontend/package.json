@@ -1,7 +1,7 @@
 {
-  "name": "Trustlayerc-frontend",
+  "name": "Trustlayer-frontend",
   "version": "1.0.0",
-  "description": "Frontend for Trustlayerc - Tu pasaporte financiero digital",
+  "description": "Frontend for Trustlayer - Tu pasaporte financiero digital",
   "private": true,
   "scripts": {
     "dev": "next dev",

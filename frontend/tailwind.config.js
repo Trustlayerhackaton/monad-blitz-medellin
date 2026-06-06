@@ -20,14 +20,6 @@ module.exports = {
           800: "#075985",
           900: "#0c4a6e",
         },
-        astar: {
-          DEFAULT: "#1b44c8",
-          dark: "#0f2d7a",
-        },
-        celo: {
-          DEFAULT: "#35d07f",
-          dark: "#2aa863",
-        },
       },
     },
   },

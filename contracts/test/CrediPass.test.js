@@ -2,7 +2,7 @@ const { expect } = require("chai");
 const { ethers } = require("hardhat");
 const { loadFixture } = require("@nomicfoundation/hardhat-toolbox/network-helpers");
 
-describe("Trustlayerc", function () {
+describe("Trustlayer", function () {
   // Despliega MockMonad + CreditNFT + RewardSystem y devuelve los signers.
   async function deployFixture() {
     const [owner, user, registrar, other] = await ethers.getSigners();
@@ -38,7 +38,7 @@ describe("Trustlayerc", function () {
       const data = await creditNFT.getCreditData(1);
       expect(data.paymentScore).to.equal(500n);
       expect(data.consecutivePayments).to.equal(0n);
-      expect(data.celoWallet).to.equal(ethers.ZeroAddress);
+      expect(data.linkedWallet).to.equal(ethers.ZeroAddress);
     });
 
     it("revierte si la wallet ya tiene un pasaporte (anti-spam)", async function () {
