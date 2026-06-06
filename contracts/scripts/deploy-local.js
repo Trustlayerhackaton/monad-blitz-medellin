@@ -9,15 +9,15 @@ async function main() {
   console.log("Desplegando con la cuenta:", deployer.address);
   console.log("Balance:", (await hre.ethers.provider.getBalance(deployer.address)).toString(), "\n");
 
-  // 1. Desplegar MockMonad
-  console.log("1️⃣ Desplegando MockMonad...");
-  const MockMonad = await hre.ethers.getContractFactory("MockMonad");
-  const mockMonad = await MockMonad.deploy(deployer.address);
-  await mockMonad.waitForDeployment();
-  const mockMonadAddress = await mockMonad.getAddress();
-  console.log("✅ MockMonad desplegado en:", mockMonadAddress);
+  // 1. Desplegar MockCCOP
+  console.log("1️⃣ Desplegando MockCCOP...");
+  const MockCCOP = await hre.ethers.getContractFactory("MockCCOP");
+  const mockCCOP = await MockCCOP.deploy(deployer.address);
+  await mockCCOP.waitForDeployment();
+  const mockCCOPAddress = await mockCCOP.getAddress();
+  console.log("✅ MockCCOP desplegado en:", mockCCOPAddress);
 
-  await mockMonad.mint(deployer.address, hre.ethers.parseEther("1000000"));
+  await mockCCOP.mint(deployer.address, hre.ethers.parseEther("1000000"));
   console.log("✅ Tokens minteados para deployer\n");
 
   // 2. Desplegar CreditNFT
@@ -34,7 +34,7 @@ async function main() {
   // 3. Desplegar RewardSystem
   console.log("3️⃣ Desplegando RewardSystem...");
   const RewardSystem = await hre.ethers.getContractFactory("RewardSystem");
-  const rewardSystem = await RewardSystem.deploy(deployer.address, mockMonadAddress, creditNFTAddress);
+  const rewardSystem = await RewardSystem.deploy(deployer.address, mockCCOPAddress, creditNFTAddress);
   await rewardSystem.waitForDeployment();
   const rewardSystemAddress = await rewardSystem.getAddress();
   console.log("✅ RewardSystem desplegado en:", rewardSystemAddress);
@@ -45,9 +45,9 @@ async function main() {
   // 4. Depositar fondos en RewardSystem
   console.log("4️⃣ Depositando fondos en RewardSystem...");
   const depositAmount = hre.ethers.parseEther("100000");
-  await mockMonad.approve(rewardSystemAddress, depositAmount);
+  await mockCCOP.approve(rewardSystemAddress, depositAmount);
   await rewardSystem.depositFunds(depositAmount);
-  console.log("✅ Fondos depositados:", hre.ethers.formatEther(depositAmount), "mMonad\n");
+  console.log("✅ Fondos depositados:", hre.ethers.formatEther(depositAmount), "mcCOP\n");
 
   // Guardar información de despliegue
   const deploymentInfo = {
@@ -55,7 +55,7 @@ async function main() {
     chainId: 31337,
     deployer: deployer.address,
     contracts: {
-      mockMonad: mockMonadAddress,
+      mockCCOP: mockCCOPAddress,
       creditNFT: creditNFTAddress,
       rewardSystem: rewardSystemAddress,
     },
@@ -75,13 +75,13 @@ async function main() {
   console.log("🎉 ¡Despliegue completado exitosamente!");
   console.log("=".repeat(60));
   console.log("\n📋 Direcciones de contratos:\n");
-  console.log("MockMonad:", mockMonadAddress);
+  console.log("MockCCOP:", mockCCOPAddress);
   console.log("CreditNFT:", creditNFTAddress);
   console.log("RewardSystem:", rewardSystemAddress);
   console.log("\n💡 Configura estas direcciones en frontend/.env.local:");
   console.log(`NEXT_PUBLIC_LOCAL_NFT_CONTRACT=${creditNFTAddress}`);
   console.log(`NEXT_PUBLIC_LOCAL_REWARD_CONTRACT=${rewardSystemAddress}`);
-  console.log(`NEXT_PUBLIC_LOCAL_Monad_CONTRACT=${mockMonadAddress}`);
+  console.log(`NEXT_PUBLIC_LOCAL_CCOP_CONTRACT=${mockCCOPAddress}`);
   console.log("\n");
 
   // Crear un NFT de prueba para el deployer
@@ -105,7 +105,7 @@ async function main() {
   const frontendEnvPath = path.join(__dirname, "..", "..", "frontend", ".env.local");
   const envContent = `NEXT_PUBLIC_LOCAL_NFT_CONTRACT=${creditNFTAddress}
 NEXT_PUBLIC_LOCAL_REWARD_CONTRACT=${rewardSystemAddress}
-NEXT_PUBLIC_LOCAL_Monad_CONTRACT=${mockMonadAddress}
+NEXT_PUBLIC_LOCAL_CCOP_CONTRACT=${mockCCOPAddress}
 NODE_ENV=development
 `;
   
