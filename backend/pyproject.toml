@@ -8,5 +8,6 @@ dependencies = [
     "fastapi>=0.136.3",
     "marker-pdf[full]>=1.10.2",
     "psycopg2-binary>=2.9.12",
+    "python-dotenv>=1.0.0",
     "requests>=2.34.2",
 ]
