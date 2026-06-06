@@ -55,9 +55,6 @@ NODE_ENV=development
    - Chain ID: `31337`
    - Símbolo: `ETH`
 3. Importa cuenta usando el mnemonic que aparece en la terminal de Hardhat:
-   ```
-   test test test test test test test test test test test junk
-   ```
 
 ### 6️⃣ Iniciar Frontend (Terminal 3)
 

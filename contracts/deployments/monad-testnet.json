@@ -1,0 +1,12 @@
+{
+  "network": "monad-testnet",
+  "chainId": "10143",
+  "deployer": "0x68c76706A5Ad6D86484A97B05D7f2F369C15B23A",
+  "contracts": {
+    "mockMonad": "0xb1Bb3e0dd7642a69D60BCc30c4Cc27Ce0787B97A",
+    "creditNFT": "0xF405496d84d88c65520f178434f91D45EA3963D3",
+    "rewardSystem": "0x931d4a5722670b87894F79AeE8bFa269432608a1"
+  },
+  "timestamp": "2026-06-06T19:13:31.108Z",
+  "explorer": "https://testnet.monadscan.com"
+}
