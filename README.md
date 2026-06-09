@@ -15,6 +15,7 @@ TrustLayer is a decentralized financial identity platform built on Monad. Users 
 
 ## Table of Contents
 
+- [The Problem](#contracts-deployed-in-Monad)
 - [The Problem](#-the-problem)
 - [The Solution](#-the-solution)
 - [Features](#-features)
@@ -29,6 +30,18 @@ TrustLayer is a decentralized financial identity platform built on Monad. Users 
 - [Business Model](#-business-model)
 - [Roadmap](#-roadmap)
 - [License](#-license)
+
+---
+
+## contracts deployed in Monad
+
+Url validated at: [Monad Testnet Explorer](https://monad-testnet.socialscan.io/address/0x68c76706a5ad6d86484a97b05d7f2f369c15b23a)
+
+App Wallet address: `0x68c76706a5ad6d86484a97b05d7f2f369c15b23a`
+
+Example Block: `https://monad-testnet.socialscan.io/block/36584296` - `https://monad-testnet.socialscan.io/block/36584304`
+
+Example contract address: `0xb1bb3e0dd7642a69d60bcc30c4cc27ce0787b97a`
 
 ---
 
